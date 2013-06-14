@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="import" href="x-fieldvalue.html">
+  </head>
+  <body>
+    <element name="x-field" constructor="XField" extends="div">
+      <template>
+        <template iterate="value in variable.values">
+          <x-fieldvalue variable="{{variable}}" value="{{value}}"></x-fieldvalue>
+        </template>
+      </template>
+      <script type="application/dart" src="x-field.dart"></script>
+    </element>
+  </body>
+</html>

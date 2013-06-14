@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="import" href="packages/datepicker/components/xdateinput.html">
+  </head>
+  <body>
+    <element name="x-fieldvalue" constructor="XFieldValue" extends="div">
+      <template>
+        <div class="field">          
+          <label class="fieldLabel" for="{{variable.id}}">{{variable.name}}{{variable.obligatory && variable.values.first==value?' (*)':''}}</label>
+          <template if="variable.interval=='S'">
+            <select class="fieldSelect" bind-value="value.sign">
+              <option value = "I">Incluir</option>
+              <option value = "E">Excluir</option>                      
+            </select>
+            <select class="fieldSelect" bind-value="value.operation">
+              <option value = "EQ">=</option>
+              <option value = "NE">&ne;</option>
+              <option value = "BT">&isin; [ ]</option>
+              <option value = "NB">&notin; [ ]</option>
+              <option value = "LE">&le;</option>
+              <option value = "GT">&gt;</option>
+              <option value = "GE">&ge;</option>
+              <option value = "LT">&lt;</option>
+              <option value = "CP">*</option>
+              <option value = "NP">&ne; *</option>
+            </select>
+          </template>
+          <template if="variable.customDateInput">
+            <xdateinput class="fieldInput" inputid="{{variable.id}}" inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.low"></xdateinput>
+          </template>
+          <template if="!variable.customInput">
+            <input class="fieldInput" id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" maxlength="{{variable.length}}" bind-value="value.low">
+          </template>                  
+          <template if="variable.interval=='S' || variable.interval=='I'">
+            <label>até</label>
+            <template if="variable.customDateInput">
+              <xdateinput class="fieldInput" inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.high" on-focus="changedHigh(variable, value)"></xdateinput>
+            </template>
+            <template if="!variable.customInput">
+              <input class="fieldInput" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" maxlength="{{variable.length}}" bind-value="value.high" on-change="changedHigh(variable, value)">
+            </template>
+            <template if="variable.interval=='S'">
+              <button class="button2" on-click="add()">+</button>
+              <button class="button2" on-click="remove()">&ndash;</button>
+            </template>
+          </template>
+        </div>
+      </template>      
+      <script type="application/dart" src="x-fieldvalue.dart"></script>
+    </element>
+  </body>
+</html>

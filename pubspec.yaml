@@ -1,0 +1,11 @@
+name: bex
+author: João Furtado
+description: Web UI app for SAP BW
+dependencies:
+  browser: any
+  datepicker: any
+  html5_dnd: any
+  jsonp_request: any
+  sharepointauth:
+    git: https://github.com/jrofurtado/sharepointauth.git
+  web_ui: any

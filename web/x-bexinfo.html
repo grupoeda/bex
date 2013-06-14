@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <element name="x-bexinfo" constructor="XBexInfo" extends="div">
+      <template>
+        <div>
+          <template if="!model.globalState.loading && model.globalState.serverState.queryState!=null && model.globalState.serverState.queryState.queryExecutionState!=null">            
+            <table id="bexinfo" class="bextable" template iterate="line in model.globalState.serverState.queryState.queryExecutionState.bexinfo">
+              <tr template iterate="cell in line">
+                <td class="{{cell.cssClass}}">{{cell.value}}</td>
+              </tr>
+            </table>
+            <!--<div class="panelbuttons">            
+              <button class="button" on-click="selectTable()">Seleccionar Tabela</button>
+            </div>-->
+          </template>
+        </div>
+      </template>      
+      <script type="application/dart" src="x-bexinfo.dart"></script>
+    </element>
+  </body>
+</html>

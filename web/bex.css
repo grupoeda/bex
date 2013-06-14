@@ -1,0 +1,282 @@
+body {
+  background-color: #fff;
+  font-family: Arial;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.2em;
+}
+button:{
+  cursor:pointer;
+}
+.buttonsettings:hover{
+  background-color: #f93;
+}
+.buttonsettings:active{
+  position:relative;
+  top:1px;
+}
+.buttonsettings{
+  vertical-align:top; 
+  background-image:url('settings.png');
+  background-color:#e72;
+  cursor:pointer;
+  width:32px;
+  height:32px;
+  border:none;
+}
+.panelsettings{
+  text-align:rigth;
+  vertical-align:top;
+  position:fixed;
+  top:0px;
+  right:0px;
+  display:block;
+  margin:25px 50px 25px 50px;
+}
+.settings{
+  border:1px solid;
+  position:fixed;
+  right:50px;
+  background-color:#fff;
+}
+.panelheader{
+  font-size: 16px;
+  font-weight: bold;
+  color: #1e62d0;
+  margin:25px 50px 25px 50px;
+}
+.panelfooter{
+  font-size: 10px;
+  color: #1e62d0;
+  padding:3px 3px 3px 3px;
+  margin:25px 50px 25px 50px;
+}
+.panelmain{
+  background-color: #fff;
+}
+.panelbuttons{
+  text-align: center;
+  margin:25px auto 5px auto;
+}
+.panelbextable{
+}
+.panelAxis{
+  width:615px;
+  margin:25px auto 25px auto;
+}
+.panelAxisColumn{
+  display:inline-block;
+  width:190px;
+  margin:0px 5px 0px 5px;
+  border:1px solid;
+}
+.bextable{
+  font-size: 12px;
+  border-collapse:collapse;
+  border: 0px solid black;
+  padding:3px 3px 3px 3px;
+  margin:0px auto 25px auto;
+}
+.cell1{
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #1ed062;
+  text-align:center;
+  padding: 6px 6px 6px 6px;
+}
+.cell0{
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #1e62d0;
+  text-align:center;
+  padding: 6px 6px 6px 6px;
+}
+.cell11{
+  background-color: #cfc;
+  text-align:center;
+  padding: 3px 3px 3px 3px;
+}
+.cell10{
+  background-color: #c0c0f0;
+  text-align:center;
+  padding: 3px 3px 3px 3px;
+}
+.cell10odd{
+  background-color: #c9c9f9;
+  text-align:center;
+  padding: 3px 3px 3px 3px;
+}
+.cell20{
+  background-color: #F0F0F0;
+  text-align:right;
+  white-space:nowrap;
+  padding: 3px 3px 3px 3px;
+}
+.cell20odd{
+  background-color: #F9F9F9;
+  text-align:right;
+  white-space:nowrap;
+  padding: 3px 3px 3px 3px;
+}
+.cellTotal{
+  background-color: #ff6;
+  text-align:center;
+  padding: 3px 3px 3px 3px;
+}
+.cell20Total{
+  background-color: #ff9;
+  text-align:right;
+  white-space:nowrap;
+  padding: 3px 3px 3px 3px;
+}
+.cell99{
+}
+.axisHeader{
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #000;
+  text-align:center;
+  padding: 6px 6px 6px 6px;
+}
+.axisfree{
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #666;
+  text-align:center;
+  padding: 6px 6px 6px 6px;
+}
+.over{
+  border-bottom: 2px dashed #000;
+}
+.moving{
+  opacity: 0.50;
+}
+.button{
+  background-color: #e72;
+  color: #ffffff;
+  border: 0;
+/*  font-size:15px;*/
+  font-weight:bold;
+  padding:6px 12px 6px 12px;
+  text-decoration:none;
+}
+.button:hover{
+  background-color: #f93;
+}
+.button:active{
+  position:relative;
+  top:1px;
+}
+.button:disabled{
+  color: #ddd;
+  position:relative;
+  top:0px;
+}
+.button2{
+  background-color: #1e62d0;
+  color: #ffffff;
+  border: 0;
+  font-weight:bold;
+  padding:2px 7px 2px 7px;
+  border:0;
+  text-decoration:none;
+}
+.button2:hover{
+  background-color: #1050c0;
+}
+.button2:active{
+  position:relative;
+  top:1px;
+}
+.button2:disabled{
+  color: #ddd;
+  position:relative;
+  top:0px;
+}
+.select{
+  background-color: #F0F0F0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #1e62d0;
+  height: 34px;
+  overflow: hidden;
+}
+.legend{
+  margin:25px 50px 25px 50px;
+  color: #1e62d0;
+}
+.panelField{
+  margin:25px 50px 25px 50px;
+  background-color: #F0F0F0;
+}
+.field{
+  margin:3px 3px 3px 3px;
+}
+.fieldLabel{
+  display:inline-block;
+  width:250px;
+  font-weight:bold;
+  color: #1e62d0;
+}
+.fieldInput{
+  display:inline-block;
+  width:200px;
+  color: #1e62d0;
+}
+.fieldSelect{
+  display:inline-block;
+  color: #1e62d0;
+}
+.xdateinput_parent{
+  text-transform:uppercase;
+  font-weight: bold;
+}
+.xdateinput_parent button{
+  color: #1e62d0;
+  background-color: #fff;
+  border: 0;
+  font-weight:bold;
+  padding:2px 7px 2px 7px;
+  border:0;
+  text-decoration:none;
+}
+.xdateinput_parent button:hover{
+  background-color: #1e62d0;
+  color: #fff;
+}
+.xdateinput_parent td{
+  font-weight:normal;
+}
+.xdateinput_parent td:hover{
+  background-color: #1e62d0;
+  color: #fff;
+}
+.xdateinput_parent th{
+  background-color: #1e62d0;
+  color: #fff;
+  padding:5px 5px 5px 5px;
+  margin:0px;
+}
+.border{
+  border:1px solid #000;
+}
+.nowrap{
+  white-space:nowrap;
+}
+.loading{
+  width:130px;
+  margin:25px auto 25px auto;
+}
+.panelAlert{
+  margin:25px 50px 25px 50px;
+}
+.alert{
+  margin:0px auto 0px auto;
+  padding:5px 10px 5px 10px;
+  color: #D8000C;
+  background-color: #FFBABA;
+  font-size: 15px;
+}
+.clearBoth{
+  clear:both;
+}
