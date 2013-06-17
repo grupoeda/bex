@@ -15,8 +15,7 @@ button:{
   position:relative;
   top:1px;
 }
-.buttonsettings{
-  vertical-align:center; 
+.buttonsettings{ 
   background-image:url('settings.png');
   background-color:#fff;
   cursor:pointer;
@@ -26,7 +25,6 @@ button:{
 }
 .panelsettings{
   text-align:rigth;
-  vertical-align:center;
   position:fixed;
   top:0px;
   right:0px;
@@ -36,6 +34,9 @@ button:{
   background-color:#fff;
   color: #1e62d0;
   box-shadow: 2px 2px 2px #888;
+}
+.panelsettings span{
+  font-weight: bold;
 }
 .settings{
   position:fixed;

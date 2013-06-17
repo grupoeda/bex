@@ -17,7 +17,7 @@
                   <div class="axisSelectPanel">
                     <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisFree, null, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">X</button>
                     <button class="button" on-click="moveCellPos(-1, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">&uarr;</button>
-                    <button class="button" on-click="moveCellPos(+1, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">&darr;</button>
+                    <button class="button" on-click="moveCellPos(1, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">&darr;</button>
                     <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, null, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">Colunas</button>
                   </div>
                 </template>
@@ -30,7 +30,7 @@
                 <template if="selectedAxis==axis">
                   <div class="axisSelectPanel">
                     <button class="button" on-click="moveCellPos(-1, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">&uarr;</button>
-                    <button class="button" on-click="moveCellPos(+1, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">&darr;</button>
+                    <button class="button" on-click="moveCellPos(1, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">&darr;</button>
                     <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisRows, null, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">Linhas</button>
                     <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, null, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">Colunas</button>
                   </div>
@@ -45,7 +45,7 @@
                   <div class="axisSelectPanel">
                     <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisFree, null, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">X</button>
                     <button class="button" on-click="moveCellPos(-1, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">&uarr;</button>
-                    <button class="button" on-click="moveCellPos(+1, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">&darr;</button>
+                    <button class="button" on-click="moveCellPos(1, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">&darr;</button>
                     <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisRows, null, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">Linhas</button>
                   </div>
                 </template>

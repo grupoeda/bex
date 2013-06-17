@@ -7,5 +7,5 @@ dependencies:
   html5_dnd: any
   jsonp_request: any
   sharepointauth:
-    git: https://github.com/jrofurtado/sharepointauth.git
+    path: C:\Users\jfurtado\dart\sharepointauth
   web_ui: any

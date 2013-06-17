@@ -1,3 +1,5 @@
+library model;
+
 import 'dart:json' as json;
 import 'dart:html';
 import 'dart:async';
@@ -5,376 +7,10 @@ import 'package:web_ui/web_ui.dart';
 import 'package:jsonp_request/jsonp_request.dart';
 import 'package:sharepointauth/authentication.dart';
 
+part 'modelclasses.dart';
+
 Model model = new Model();
 final bool useJsonp = false;
-
-class Html5Support{
-  bool inputTypeDate;
-  bool inputTypeNumber;
-}
-
-@observable
-class Cell{
-  static const int EMPTY = 99;
-  static const int CHARINFOROW = 0;
-  static const int CHARINFOCOLUMN = 1;
-  static const int CHARDATAROW = 10;
-  static const int CHARDATACOLUMN = 11;
-  static const int CELL = 20;
-  String id;
-  String description;
-  int type;
-  bool odd = false;
-  int colspan = 1;
-  int get colspanShow{
-    if(model.viewState.showGrid)
-      return colspan;
-    else return 1;
-  }
-  int rowspan = 1;
-  int get rowspanShow{
-    if(model.viewState.showGrid)
-      return rowspan;
-    else return 1;
-  }
-  bool show = true;
-  bool totalOdd = false;
-  bool totalRow = false;
-  bool totalColumn = false;
-  bool total = false;
-  bool selected = false;
-  String get value{
-    if((model.viewState.useDescription&&description!=null&&description.length>0)||id==null||id.length==0)
-      return description;
-    else
-      return id;
-  }
-  String get cssClass{
-    String cssClass;
-    if(total)
-      if(type==Cell.CELL)
-        cssClass = "cell20Total";
-      else
-        cssClass = "cellTotal";
-    else
-      cssClass = "cell${type}";
-    bool odd;
-    if(!model.viewState.showTotals)
-      odd = this.totalOdd;
-    else
-      odd = this.odd;
-    if(model.viewState.showGrid)
-      if(type!=Cell.EMPTY)
-        cssClass += " border";
-    else if(!total&&odd&&(type==CHARDATAROW||type==CELL))
-      cssClass += "odd";
-    return cssClass;
-  }
-  Cell(this.id,this.description,this.type,this.total);
-}
-
-@observable
-class Axis{
-  String id;
-  String description;
-  bool selected = false;
-  String get value{
-    if((model.viewState.useDescription&&description!=null&&description.length>0)||id==null||id.length==0)
-      return description;
-    else
-      return id;
-  }
-  
-  Axis(this.id,this.description);
-}
-
-@observable
-class Query{
-  static final Query EMPTYQUERY = new Query("","","---Seleccione uma query------------------------------------------------------------");
-  String infocube;
-  String query;
-  String description;
-  String get id{
-    if(infocube!="")
-      return "${infocube}/${query}";
-    else
-      return "";
-  }
-  String get value{
-    if(!model.viewState.useDescription&&id!="")
-      return id;
-    else
-      return description;
-  }
-  
-  Query(this.infocube, this.query, this.description);
-}
-
-@observable
-class VariableValue{
-  String guid;
-  String operation;
-  String sign;
-  String low;
-  String lowDescription;
-  String high;
-  String highDescription;
-  bool get interval{
-    return operation=="BT"||operation=="NB";
-  }
-  
-  VariableValue(){
-    operation = "EQ";
-    sign = "I";
-    low = "";
-    lowDescription = "";
-    high = "";
-    highDescription = "";
-  }
-}
-
-@observable
-class Variable{
-  String id;
-  String description;
-  bool obligatory;
-  bool copy;
-  String interval;
-  String charName;
-  int length;
-  String dataType;
-  String get name{
-    if(model.viewState.useDescription&&description.length>0)
-      return description;
-    else
-      return id;
-  }
-  String get htmlInputType{
-    if(dataType=="NUMC"&&model.html5Support.inputTypeNumber)
-      return "number";
-    else if (dataType=="DATS"&&model.html5Support.inputTypeDate)
-      return "date";
-    else
-      return "text";
-  }
-  String get htmlInputPlaceholder{
-    if(dataType=="NUMC")
-      return "número com ${length} digitos";
-    else if(dataType=="CHAR")
-      return "cadeia com ${length} caracteres";
-    else if (dataType=="DATS")
-      return "aaaa-mm-dd (10 digitos)";
-    else
-      return "";
-  }
-  bool get customDateInput{
-    return (dataType=="DATS"&&!model.html5Support.inputTypeDate);
-  }
-  bool get customInput{
-    return customDateInput;
-  }
-  List<Map> possibleValues;
-  List<VariableValue> values;
-  
-  Variable(this.id,this.description,this.obligatory,this.interval,this.charName, this.length, this.dataType){
-    possibleValues = [];
-    VariableValue value = new VariableValue();    
-    if(interval=='I')
-      value.operation = "BT";
-    values = [];
-    addVariableValue(value);
-  }
-  
-  addVariableValue(VariableValue value){
-    values.add(value);
-  }
-  
-  removeVariableValue(VariableValue value){
-    values.remove(value);
-  }
-}
-
-@observable
-class Server{
-  static final Server BWP = new Server("BWP 100", "Produtivo BW", "http://dcsapbwprd01.grupoeda.pt:8000/ZBEX2JSON");
-  static final Server BWQ = new Server("BWQ 100", "Qualidade BW", "http://dcsapbwq01.grupoeda.pt:8000/ZBEX2JSON");
-  static final Server BWD = new Server("BWD 100", "Desenvolvimento BW", "http://dcsapbw01.grupoeda.pt:8000/ZBEX2JSON");
-  static final Server MOCK = new Server("MOCK", "Sistema Falso para Testes", "../");
-  String id;
-  String description;
-  String endpoint;
-  String get name{
-    if(model.viewState.useDescription&&description.length>0)
-      return description;
-    else
-      return id;
-  }
-  
-  Server(this.id, this.description, this.endpoint);
-}
-
-@observable
-class ServerState{
-  List<Server> servers = [Server.BWP,Server.BWQ,Server.BWD];
-  Server currentServer = Server.BWP;
-  String get serverId{
-    if(currentServer==null)
-      return "";
-    else
-      return currentServer.id;
-  }
-  set serverId(String id){
-    setServerId(id,true);
-  }
-  Map<String, Query> queries={};
-  List<Query> get queryList{
-    List<Query> queryList = toObservable(queries.values.toList(growable: true));
-    queryList.sort((Query a, Query b) {
-      return a.description.compareTo(b.description);
-    });
-    queryList.insert(0, Query.EMPTYQUERY);
-    return queryList;
-  }
-  QueryState queryState = null;
-  String get currentQueryId{
-    if(currentQuery==null)
-      return "";
-    else
-      return currentQuery.id;
-  }
-  set currentQueryId(String id){
-    setQueryId(id, true);
-  }
-  Query currentQuery = null;
-  
-  Future setQueryId(String id, bool modeAll){
-    if(modeAll){
-      if(id==null||id==""){
-        currentQuery=null;
-      }else{
-        currentQuery = queries[id];
-      }
-      return model.loadQuery(currentQuery);
-    }else{
-      Completer completer = new Completer();
-      List<String> idAux = id.split("/");
-      if(idAux.length==2){
-        currentQuery=new Query(idAux[0], idAux[1],id);
-        model.globalState.serverState.queryState=new QueryState();
-      }
-      completer.complete(null);
-      return completer.future;
-    }
-  }
-  Future setServerId(String id, bool modeAll){
-    if(id==null||id==""){
-      currentServer = null;
-    }else{
-      currentServer = servers.where((Server a){
-        return a.id==id;
-      }).first;
-    }
-    if(modeAll)
-      return model.loadQueries();
-    else{
-      Completer completer = new Completer();
-      completer.complete(null);
-      return completer.future;
-    }
-  }
-}
-
-@observable
-class QueryState{
-  List<Variable> currentQueryVars=toObservable([]);
-  QueryExecutionState queryExecutionState = null;
-  bool get currentQueryVarsObligatory{
-    return currentQueryVars.any((Variable x){
-      return x.obligatory;
-    });
-  }
-}
-
-@observable
-class QueryExecutionState{
-  Map bexraw = {};
-  List<List<Cell>> bextable = toObservable([]);
-  List<List<Cell>> bexinfo = toObservable([]);
-  List<Axis> newAxisFree = toObservable([]);
-  List<Axis> newAxisColumns = toObservable([]);
-  List<Axis> newAxisRows = toObservable([]);
-  List<Axis> axisFree = toObservable([]);
-  List<Axis> axisColumns = toObservable([]);
-  List<Axis> axisRows = toObservable([]);
-  List<List<Cell>> get bextablechecktotals{
-    if(model.viewState.showTotals)
-      return bextable;
-    else
-      return toObservable(bextable.where((List<Cell> l){
-        return !l[0].totalRow;
-      })); 
-  }
-  
-  void resetNewAxis(){
-    newAxisFree = toObservable([]);
-    newAxisFree.addAll(axisFree);
-    newAxisColumns = toObservable([]);
-    newAxisColumns.addAll(axisColumns);
-    newAxisRows = toObservable([]);
-    newAxisRows.addAll(axisRows);
-  }
-  
-  void clearNewAxisColumns(){
-    newAxisFree = toObservable([]);
-    newAxisFree.addAll(axisFree);    
-    newAxisFree.addAll(axisColumns);
-    newAxisColumns = toObservable([]);
-  }
-  
-  void clearNewAxisRows(){
-    newAxisFree = toObservable([]);
-    newAxisFree.addAll(axisFree);
-    newAxisFree.addAll(axisRows);
-    newAxisRows = toObservable([]);    
-  }
-}
-
-@observable
-class ViewState{
-  bool useDescription = true;  
-  bool showInformation = false;
-  bool showAxis = false;
-  bool showTotals = true;
-  bool showGrid = true;
-  bool expandTableText = false;
-  bool showSettings = false;
-}
-
-@observable
-class GlobalState{
-  String errorMessage=null;
-  bool loading = false;
-  ServerState serverState = new ServerState();
-}
-
-@observable
-class Params{
-  bool mock=false;
-  bool modeAll=false;
-  bool modeTable=false;
-  bool modeGraph=false;
-  set mode(String mode){
-    if(mode==null)
-      mode="ALL";
-    if(mode.toUpperCase()=="GRAPH")
-      modeGraph=true;
-    else if(mode.toUpperCase()=="TABLE")
-      modeTable=true;
-    else{
-      modeAll=true;
-    }
-  }
-}
 
 class Model{        
   @observable
@@ -387,26 +23,26 @@ class Model{
   ViewState viewState= new ViewState();
   @observable
   Authentication authentication=new Authentication();
-  
-  
+    
   Future callService(String service, String endpointParams){
     Completer completer = new Completer();
     String url;
     if(globalState.serverState.currentServer==Server.MOCK)
-      url = "${globalState.serverState.currentServer.endpoint}mock_${service}.json";
+      url = "${globalState.serverState.currentServer.endpoint}mock_${service}.json?${endpointParams}";
     else
       url = "${globalState.serverState.currentServer.endpoint}?service=${service}${endpointParams}";
     if(useJsonp){
       jsonpRequest(url).then((result) {
         completer.complete(result);
       });
-    }else{
+    }else{      
       HttpRequest.request(url).then((req){
         try{
           var result = json.parse(req.responseText);
           completer.complete(result);
-        }catch (e){
+        }catch (e,s){
           print("Erro no serviço ${service}: ${e}");
+          print(s);
           completer.completeError(e);
         }
       }).catchError((e){
@@ -639,14 +275,21 @@ class Model{
         value="0"+value;
       }
     } else if(variable.dataType=="DATS"){
-      if(value.length!=10&&value.length!=0){
-        globalState.errorMessage='O valor "${value}" não é uma data';
-        return null;
-      }else if (value.length!=0){
+      if(value.length==0)
+        value="";
+      else if(value.length==8){
+        String ano = value.substring(0, 4);
+        String mes = value.substring(4, 6);
+        String dia = value.substring(6, 8);
+        value = "${ano}${mes}${dia}";
+      }else if(value.length==10){      
         String ano = value.substring(0, 4);
         String mes = value.substring(5, 7);
         String dia = value.substring(8, 10);
         value = "${ano}${mes}${dia}";
+      }else{
+        globalState.errorMessage='O valor "${value}" não é uma data';
+        return null;
       }
     }
     if(setValue){
@@ -675,11 +318,13 @@ class Model{
       validate = false;
     }
     String endpointParams="";
+    String hash="";
     if(validate){
-      String endpointParams = "&infocube=${globalState.serverState.currentQuery.infocube}&query=${globalState.serverState.currentQuery.query}";
+      endpointParams = "&infocube=${globalState.serverState.currentQuery.infocube}&query=${globalState.serverState.currentQuery.query}";
       endpointParams += "&USER=${authentication.user}";
       endpointParams += "&KEY=${authentication.key}";
-      num i = 1;    
+      endpointParams += "&DATETIME=${authentication.datetime}";      
+      num i = 1;
       for(Variable variable in globalState.serverState.queryState.currentQueryVars){
         bool filled = false;
         for(num index = 0; index<variable.values.length;index++){
@@ -688,7 +333,7 @@ class Model{
             String high = fillVariableValue(variable, index, false);
             if(low==null||high==null)
               validate = false;
-            endpointParams += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${variable.values[index].operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";
+            hash += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${variable.values[index].operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";                  
             i++;
             filled = true;
           } else if (!filled&&variable.obligatory){
@@ -699,15 +344,18 @@ class Model{
       }
     }
     if(validate && globalState.serverState.queryState.queryExecutionState!=null){
-      endpointParams += fillUrlAxis("FREE", globalState.serverState.queryState.queryExecutionState.newAxisFree);
-      endpointParams += fillUrlAxis("COL", globalState.serverState.queryState.queryExecutionState.newAxisColumns);
-      endpointParams += fillUrlAxis("ROW", globalState.serverState.queryState.queryExecutionState.newAxisRows);
+      hash += fillUrlAxis("FREE", globalState.serverState.queryState.queryExecutionState.newAxisFree);
+      hash += fillUrlAxis("COL", globalState.serverState.queryState.queryExecutionState.newAxisColumns);
+      hash += fillUrlAxis("ROW", globalState.serverState.queryState.queryExecutionState.newAxisRows);
     }
     if(validate){
+      endpointParams+=hash;
       globalState.loading=true;
       globalState.serverState.queryState.queryExecutionState = new QueryExecutionState();
       callService("execute",endpointParams).then((result){
         assignBexResult(result);
+        hash="execute&serverId=${globalState.serverState.serverId}&queryId=${globalState.serverState.currentQueryId}${hash}";
+        window.location.hash=hash;
         completer.complete(null);
       }).catchError((e){
         globalState.loading=false;
@@ -782,11 +430,11 @@ class Model{
     }
     return completer.future;
   }
-  String replaceVariableValue(String value){
+  String replaceVariableValue(String dataType, String value){
     if(value==null)
       return null;
     else{
-      return value.replaceAllMapped(new RegExp(r"d{{[^}]*}}"), (Match match){
+      String str = value.replaceAllMapped(new RegExp(r"d{{[^}]*}}"), (Match match){
         String expression=match.group(0).substring(3, match.group(0).length-2);
         DateTime date = new DateTime.now();
         List<String> comps = expression.replaceAll(" ", "").split(",");
@@ -795,27 +443,32 @@ class Model{
           int month=date.month;
           int year=date.year;
           if(comps.length>=3)
-            if(comps[2].startsWith("+")||comps[2].startsWith("-"))
-              day += int.parse(comps[2]);
+            if(comps[2].startsWith("_"))
+              day += int.parse(comps[2].substring(1));
             else
               day = int.parse(comps[2]);
           if(comps.length>=2)
-            if(comps[1].startsWith("+")||comps[1].startsWith("-"))
-              month += int.parse(comps[1]);
+            if(comps[1].startsWith("_"))
+              month += int.parse(comps[1].substring(1));
             else
               month = int.parse(comps[1]);
           if(comps.length>=1)
-            if(comps[0].startsWith("+")||comps[0].startsWith("-"))
-              year += int.parse(comps[0]);
+            if(comps[0].startsWith("_"))
+              year += int.parse(comps[0].substring(1));
             else
               year = int.parse(comps[0]);
           date = new DateTime(year, month, day);
-        }catch(e){
+        }catch(e, s){
           print(e);
+          print(s);
         }
-        print("${expression}=${date.toString().substring(0,10)}");
-        return date.toString().substring(0,10);
+        String dateStr = date.toString().substring(0,10);
+        print("${expression}=${dateStr}");
+        return dateStr;
       });
+      if(dataType=="DATS"&&str.length==8)
+        str=str.substring(0, 4)+"-"+str.substring(4, 6)+"-"+str.substring(6, 8);
+      return str;
     }
   }
   void fillVarsFromHash(Map<String, String> params){
@@ -847,10 +500,12 @@ class Model{
         return v.id==vnam;
       });
       Variable variable;
-      if(variables.isEmpty){
+      if(variables.isEmpty){        
         variable = new Variable(vnam,vnam,false,"S",vnam,100,"CHAR");
-      }else
-        variable = variables.first;
+        vars.add(variable);
+      }else{
+        variable = variables.first;        
+      }
       if(variable!=null){
         VariableValue variableValue = new VariableValue();
         if(varMap['opt']!=null)
@@ -858,9 +513,9 @@ class Model{
         if(varMap['sign']!=null)
           variableValue.sign=varMap['sign'];
         if(varMap['low']!=null)
-          variableValue.low=replaceVariableValue(varMap['low']);
+          variableValue.low=replaceVariableValue(variable.dataType, varMap['low']);
         if(varMap['high']!=null)
-          variableValue.high=replaceVariableValue(varMap['high']);
+          variableValue.high=replaceVariableValue(variable.dataType, varMap['high']);
         variable.values.add(variableValue);
       }
     }
@@ -916,8 +571,9 @@ void main() {
       future.then((_){
         model.fillVarsFromHash(paramsHash);
         if(paramsHash['execute']!=null){
-          model.authentication.waitForAuthentication();
-          Future future = model.executeBex();
+          model.authentication.waitForAuthentication().then((_){
+            model.executeBex();
+          });
         }
       });
     });
