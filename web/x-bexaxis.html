@@ -12,20 +12,44 @@
             <div class="panelAxisColumn">
               <div class="axisHeader" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, null)">Linhas</div>
               <template iterate="axis in model.globalState.serverState.queryState.queryExecutionState.newAxisRows">
-                <div class="cell0" draggable="true" on-drag-start="_onDragStart($event, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">{{axis.value}}</div>
+                <div class="cell0 selectable {{selectedAxis==axis? 'selected':''}}" on-click="clickAxis(axis)" draggable="true" on-drag-start="_onDragStart($event, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">{{axis.value}}</div>
+                <template if="selectedAxis==axis">
+                  <div class="axisSelectPanel">
+                    <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisFree, null, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">X</button>
+                    <button class="button" on-click="moveCellPos(-1, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">&uarr;</button>
+                    <button class="button" on-click="moveCellPos(+1, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">&darr;</button>
+                    <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, null, model.globalState.serverState.queryState.queryExecutionState.newAxisRows, axis)">Colunas</button>
+                  </div>
+                </template>
               </template>
             </div>
             <div class="panelAxisColumn">
               <div class="axisHeader" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, null)">Caracteristicas Livres</div>              
               <template iterate="axis in model.globalState.serverState.queryState.queryExecutionState.newAxisFree">
-                <div class="axisfree" draggable="true" on-drag-start="_onDragStart($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">{{axis.value}}</div>
+                <div class="axisfree selectable {{selectedAxis==axis? 'selected':''}}" on-click="clickAxis(axis)" draggable="true" on-drag-start="_onDragStart($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">{{axis.value}}</div>
+                <template if="selectedAxis==axis">
+                  <div class="axisSelectPanel">
+                    <button class="button" on-click="moveCellPos(-1, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">&uarr;</button>
+                    <button class="button" on-click="moveCellPos(+1, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">&darr;</button>
+                    <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisRows, null, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">Linhas</button>
+                    <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, null, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">Colunas</button>
+                  </div>
+                </template>
               </template>
             </div>
             <div class="panelAxisColumn">
               <div class="axisHeader" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, null)">Colunas</div>
               <template iterate="axis in model.globalState.serverState.queryState.queryExecutionState.newAxisColumns">
-                <div class="cell1" draggable="true" on-drag-start="_onDragStart($event, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">{{axis.value}}</div>
-              </template>              
+                <div class="cell1 selectable {{selectedAxis==axis? 'selected':''}}" on-click="clickAxis(axis)" draggable="true" on-drag-start="_onDragStart($event, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">{{axis.value}}</div>
+                <template if="selectedAxis==axis">
+                  <div class="axisSelectPanel">
+                    <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisFree, null, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">X</button>
+                    <button class="button" on-click="moveCellPos(-1, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">&uarr;</button>
+                    <button class="button" on-click="moveCellPos(+1, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">&darr;</button>
+                    <button class="button" on-click="moveCell(model.globalState.serverState.queryState.queryExecutionState.newAxisRows, null, model.globalState.serverState.queryState.queryExecutionState.newAxisColumns, axis)">Linhas</button>
+                  </div>
+                </template>
+              </template>
             </div>          
             <div class="clearBoth"></div>
           </div>

@@ -3,7 +3,9 @@ import 'package:web_ui/web_ui.dart';
 import 'package:web_ui/watcher.dart' as watchers;
 import 'dart:html';
 
-class XBexAxis extends WebComponent {  
+class XBexAxis extends WebComponent {
+@observable
+  Axis selectedAxis;
   Element _dragSourceEl;
   List<Axis> _axisList;
   Axis _axis;
@@ -24,6 +26,13 @@ class XBexAxis extends WebComponent {
     List<Axis> temp = model.globalState.serverState.queryState.queryExecutionState.newAxisColumns;
     model.globalState.serverState.queryState.queryExecutionState.newAxisColumns = model.globalState.serverState.queryState.queryExecutionState.newAxisRows;
     model.globalState.serverState.queryState.queryExecutionState.newAxisRows = temp;
+  }
+  
+  void clickAxis(Axis axis){
+    if(selectedAxis==axis)
+      selectedAxis=null;
+    else
+      selectedAxis=axis;
   }
   
   void _onDragStart(MouseEvent event, List<Axis> axisList, Axis axis) {
@@ -67,6 +76,26 @@ class XBexAxis extends WebComponent {
     // Don't do anything if dropping onto the same column we're dragging.
     Element dropTarget = event.target;
     if (_dragSourceEl != dropTarget) {   
+      moveCell(axisList, axis, _axisList, _axis);
+    }
+  }
+  void moveCellPos(int offset, List<Axis> _axisList, Axis _axis){
+    int _pos = _axisList.indexOf(_axis)+offset;
+    Axis axis;
+    if(offset<0)
+      if(_pos<=0)
+        axis = null;
+      else
+        axis = _axisList[_pos-1];
+    else
+      if(_pos>=_axisList.length)
+        axis = _axisList[_axisList.length-1];
+      else
+        axis = _axisList[_pos];
+    moveCell(_axisList, axis, _axisList, _axis);
+  }
+  void moveCell(List<Axis> axisList, Axis axis, List<Axis> _axisList, Axis _axis){
+    if (axis!=_axis) {   
       int pos;      
       if(axis==null)
         pos=0;

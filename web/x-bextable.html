@@ -19,31 +19,32 @@
             </div>
           </div>
         </template>
-        <div class="panelsettings">
-          <xsharepointauth bind-authentication="model.authentication" type="qual" app="BEX"></xsharepointauth>
+        <div class="panelsettings {{model.params.modeAll?'':'invisible'}}">
+          <xsharepointauth bind-authentication="model.authentication" type="{{model.params.mock?'mock':'qual'}}" app="BEX"></xsharepointauth>
           <button class="buttonsettings" on-click="toogleShowSettings()"></button>
           <template if="model.viewState.showSettings">
             <div class="settings">
               <div><input id="checkUseDescription" type="checkbox" bind-checked="model.viewState.useDescription"><label for="checkUseDescription">Descrições</label></div>
-              <div><input id="checkShowInformation" type="checkbox" bind-checked="model.viewState.showInformation"><label for="checkShowInformation">Informação Relatório</label></div>
-              <div><input id="checkShowAxis" type="checkbox" bind-checked="model.viewState.showAxis"><label for="checkShowAxis">Configuração Eixos</label></div>
+              <template if="model.params.modeAll">
+                <div><input id="checkShowInformation" type="checkbox" bind-checked="model.viewState.showInformation"><label for="checkShowInformation">Informação Relatório</label></div>
+                <div><input id="checkShowAxis" type="checkbox" bind-checked="model.viewState.showAxis"><label for="checkShowAxis">Configuração Eixos</label></div>
+              </template>
               <div><input id="checkShowTotals" type="checkbox" bind-checked="model.viewState.showTotals"><label for="checkShowTotals">Totais</label></div>
               <div><input id="checkShowGrid" type="checkbox" bind-checked="model.viewState.showGrid"><label for="checkShowGrid">Grelha</label></div>
-              <div><input id="checkExpandTableText" type="checkbox" bind-checked="model.viewState.expandTableText">Expandir Relatório<label for="checkExpandTableText"></label></div>
+              <div><input id="checkExpandTableText" type="checkbox" bind-checked="model.viewState.expandTableText"><label for="checkExpandTableText">Expandir Relatório</label></div>
             </div>            
           </template>
         </div>
-        <div class="panelheader">
-          <img src="../logo.png">
-          <select template iterate="server in model.globalState.serverState.servers" class="select" bind-value="model.globalState.serverState.serverId">
-            <option selected="{{server.id==model.globalState.serverState.serverId}}" value="{{server.id}}">{{server.name}}</option>
-          </select>
-          <select template iterate="query in model.globalState.serverState.queryList" class="select" bind-value="model.globalState.serverState.currentQueryId">
-            <option selected="{{query.id==model.globalState.serverState.currentQueryId}}" value="{{query.id}}">{{query.value}}</option>
-          </select>
-          <button class="button" on-click="toogleUseDescription()">{{buttonToogleUseDescriptionText}}</button> 
-        </div>
-        <div>                   
+        <template if="model.params.modeAll">
+          <div class="panelheader">
+            <img src="../logo.png">
+            <select template iterate="server in model.globalState.serverState.servers" class="select" bind-value="model.globalState.serverState.serverId">
+              <option selected="{{server.id==model.globalState.serverState.serverId}}" value="{{server.id}}">{{server.name}}</option>
+            </select>
+            <select template iterate="query in model.globalState.serverState.queryList" class="select" bind-value="model.globalState.serverState.currentQueryId">
+              <option selected="{{query.id==model.globalState.serverState.currentQueryId}}" value="{{query.id}}">{{query.value}}</option>
+            </select> 
+          </div>
           <template if="model.globalState.serverState.currentQueryId!=''">            
             <template if="model.globalState.serverState.queryState!=null">
               <template if="model.globalState.serverState.queryState.currentQueryVarsObligatory">
@@ -56,36 +57,33 @@
               </div>
               <div class="panelbuttons">
                 <button class="button" on-click="model.executeBex()">Executar</button>
-                <button class="button" on-click="toogleInformation()" disabled="{{model.globalState.serverState.queryState.queryExecutionState==null}}">{{buttonToogleInformationText}}</button>
                 <button class="button" on-click="toogleShowAxis()" disabled="{{model.globalState.serverState.queryState.queryExecutionState==null}}">{{buttonToogleShowAxisText}}</button>            
               </div> 
             </template>                                   
           </template>
-          <template if="model.globalState.loading">
-            <x-loading></x-loading>
-          </template>          
+        </template>
+        <template if="model.globalState.loading">
+          <x-loading></x-loading>
+        </template>
+        <template if="model.params.modeAll">
           <template if="model.viewState.showInformation">
             <x-bexinfo></x-bexinfo>
           </template>
           <template if="model.viewState.showAxis">
             <x-bexaxis></x-bexaxis>
           </template>
-          <template if="model.globalState.serverState.queryState!=null && model.globalState.serverState.queryState.queryExecutionState!=null">            
+        </template>        
+        <template if="model.globalState.serverState.queryState!=null && model.globalState.serverState.queryState.queryExecutionState!=null">            
+          <template if="model.params.modeAll || model.params.modeTable">
             <table id="bextable" class="bextable">
               <tbody template iterate="line in model.globalState.serverState.queryState.queryExecutionState.bextablechecktotals">
               <tr template iterate="cell in line" class="bextablerow">
-                <td colspan="{{cell.colspanShow}}" rowspan="{{cell.rowspanShow}}" template if="(!model.viewState.showGrid||cell.show) && (model.viewState.showTotals || !(cell.totalColumn||cell.totalRow))" class="{{cell.cssClass}}{{expandTableText?' nowrap':''}}">{{cell.value}}</td>
+                <td colspan="{{cell.colspanShow}}" rowspan="{{cell.rowspanShow}}" template if="(!model.viewState.showGrid||cell.show) && (model.viewState.showTotals || !(cell.totalColumn||cell.totalRow))" class="{{cell.cssClass}}{{model.viewState.expandTableText?' nowrap':''}}">{{cell.value}}</td>
               </tr>
               </tbody>
             </table>
-            <div class="panelbuttons">
-              <button class="button" on-click="toogleExpandTable()">{{buttonToogleExpandTableText}}</button>
-              <!--<button class="button" on-click="selectTable()">Seleccionar Tabela</button>-->
-              <button class="button" on-click="toogleShowTotals()">{{buttonToogleShowTotalsText}}</button>
-              <button class="button" on-click="toogleShowGrid()">{{buttonToogleShowGridText}}</button>
-            </div>
           </template>
-        </div>
+        </template>
         <div class="panelfooter">
         </div>
       </template>      

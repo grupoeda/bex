@@ -1,5 +1,6 @@
 import 'dart:json' as json;
 import 'dart:html';
+import 'dart:async';
 import 'package:web_ui/web_ui.dart';
 import 'package:jsonp_request/jsonp_request.dart';
 import 'package:sharepointauth/authentication.dart';
@@ -198,6 +199,7 @@ class Server{
   static final Server BWP = new Server("BWP 100", "Produtivo BW", "http://dcsapbwprd01.grupoeda.pt:8000/ZBEX2JSON");
   static final Server BWQ = new Server("BWQ 100", "Qualidade BW", "http://dcsapbwq01.grupoeda.pt:8000/ZBEX2JSON");
   static final Server BWD = new Server("BWD 100", "Desenvolvimento BW", "http://dcsapbw01.grupoeda.pt:8000/ZBEX2JSON");
+  static final Server MOCK = new Server("MOCK", "Sistema Falso para Testes", "../");
   String id;
   String description;
   String endpoint;
@@ -213,23 +215,16 @@ class Server{
 
 @observable
 class ServerState{
-  Server currentServer = Server.BWP;
   List<Server> servers = [Server.BWP,Server.BWQ,Server.BWD];
+  Server currentServer = Server.BWP;
   String get serverId{
     if(currentServer==null)
       return "";
     else
       return currentServer.id;
   }
-  set serverId(String serverId){
-    if(serverId==null||serverId==""){
-      currentServer = null;
-    }else{
-      currentServer = servers.where((Server a){
-        return a.id==serverId;
-      }).first;
-    }
-    model.loadQueries();
+  set serverId(String id){
+    setServerId(id,true);
   }
   Map<String, Query> queries={};
   List<Query> get queryList{
@@ -248,14 +243,45 @@ class ServerState{
       return currentQuery.id;
   }
   set currentQueryId(String id){
-    if(id==null||id==""){
-      currentQuery=null;
-    }else{
-      currentQuery = queries[id];
-    }
-    model.loadQuery(currentQuery);
+    setQueryId(id, true);
   }
   Query currentQuery = null;
+  
+  Future setQueryId(String id, bool modeAll){
+    if(modeAll){
+      if(id==null||id==""){
+        currentQuery=null;
+      }else{
+        currentQuery = queries[id];
+      }
+      return model.loadQuery(currentQuery);
+    }else{
+      Completer completer = new Completer();
+      List<String> idAux = id.split("/");
+      if(idAux.length==2){
+        currentQuery=new Query(idAux[0], idAux[1],id);
+        model.globalState.serverState.queryState=new QueryState();
+      }
+      completer.complete(null);
+      return completer.future;
+    }
+  }
+  Future setServerId(String id, bool modeAll){
+    if(id==null||id==""){
+      currentServer = null;
+    }else{
+      currentServer = servers.where((Server a){
+        return a.id==id;
+      }).first;
+    }
+    if(modeAll)
+      return model.loadQueries();
+    else{
+      Completer completer = new Completer();
+      completer.complete(null);
+      return completer.future;
+    }
+  }
 }
 
 @observable
@@ -323,6 +349,7 @@ class ViewState{
   bool expandTableText = false;
   bool showSettings = false;
 }
+
 @observable
 class GlobalState{
   String errorMessage=null;
@@ -330,14 +357,65 @@ class GlobalState{
   ServerState serverState = new ServerState();
 }
 
+@observable
+class Params{
+  bool mock=false;
+  bool modeAll=false;
+  bool modeTable=false;
+  bool modeGraph=false;
+  set mode(String mode){
+    if(mode==null)
+      mode="ALL";
+    if(mode.toUpperCase()=="GRAPH")
+      modeGraph=true;
+    else if(mode.toUpperCase()=="TABLE")
+      modeTable=true;
+    else{
+      modeAll=true;
+    }
+  }
+}
+
 class Model{        
+  @observable
   Html5Support html5Support;
+  @observable
+  Params params;
   @observable
   GlobalState globalState= new GlobalState();
   @observable
   ViewState viewState= new ViewState();
   @observable
-  Authentication authentication;
+  Authentication authentication=new Authentication();
+  
+  
+  Future callService(String service, String endpointParams){
+    Completer completer = new Completer();
+    String url;
+    if(globalState.serverState.currentServer==Server.MOCK)
+      url = "${globalState.serverState.currentServer.endpoint}mock_${service}.json";
+    else
+      url = "${globalState.serverState.currentServer.endpoint}?service=${service}${endpointParams}";
+    if(useJsonp){
+      jsonpRequest(url).then((result) {
+        completer.complete(result);
+      });
+    }else{
+      HttpRequest.request(url).then((req){
+        try{
+          var result = json.parse(req.responseText);
+          completer.complete(result);
+        }catch (e){
+          print("Erro no serviço ${service}: ${e}");
+          completer.completeError(e);
+        }
+      }).catchError((e){
+        print("Erro no serviço ${service}: ${e}");
+        completer.completeError(e);
+      });
+    }
+    return completer.future;
+  }
   
   void assignBexResult(Map result){
     if(result['error']!=null)
@@ -552,6 +630,8 @@ class Model{
         return "";
       }
     }
+    /*if(value==null)
+      value="";*/
     if(variable.dataType=="NUMC"){
       setValue = true;      
       num missing0 = variable.length-value.length;
@@ -585,32 +665,36 @@ class Model{
     return param;
   }
   
-  void executeBex(){
-    if(globalState.serverState==null||globalState.serverState.queryState==null)
-      return;
+  Future executeBex(){
+    Completer completer=new Completer();
     bool validate = true;
-    if(authentication==null){
+    if(globalState.serverState==null||globalState.serverState.queryState==null)
+      validate = false;
+    if(validate&&authentication==null){
       globalState.errorMessage="Nenhum utilizador autenticado";
       validate = false;
     }
-    String endpointParams = "&infocube=${globalState.serverState.currentQuery.infocube}&query=${globalState.serverState.currentQuery.query}";
-    endpointParams += "&USER=${authentication.user}";
-    endpointParams += "&KEY=${authentication.key}";
-    num i = 1;    
-    for(Variable variable in globalState.serverState.queryState.currentQueryVars){
-      bool filled = false;
-      for(num index = 0; index<variable.values.length;index++){
-        if(variable.values[index].low!=""||variable.values[index].high!=""){
-          String low = fillVariableValue(variable, index, true);
-          String high = fillVariableValue(variable, index, false);
-          if(low==null||high==null)
+    String endpointParams="";
+    if(validate){
+      String endpointParams = "&infocube=${globalState.serverState.currentQuery.infocube}&query=${globalState.serverState.currentQuery.query}";
+      endpointParams += "&USER=${authentication.user}";
+      endpointParams += "&KEY=${authentication.key}";
+      num i = 1;    
+      for(Variable variable in globalState.serverState.queryState.currentQueryVars){
+        bool filled = false;
+        for(num index = 0; index<variable.values.length;index++){
+          if(variable.values[index].low!=""||variable.values[index].high!=""){
+            String low = fillVariableValue(variable, index, true);
+            String high = fillVariableValue(variable, index, false);
+            if(low==null||high==null)
+              validate = false;
+            endpointParams += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${variable.values[index].operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";
+            i++;
+            filled = true;
+          } else if (!filled&&variable.obligatory){
+            globalState.errorMessage='O filtro "${variable.name}" é obrigatório';
             validate = false;
-          endpointParams += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${variable.values[index].operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";
-          i++;
-          filled = true;
-        } else if (!filled&&variable.obligatory){
-          globalState.errorMessage='O filtro "${variable.name}" é obrigatório';
-          validate = false;
+          }
         }
       }
     }
@@ -622,17 +706,18 @@ class Model{
     if(validate){
       globalState.loading=true;
       globalState.serverState.queryState.queryExecutionState = new QueryExecutionState();
-      String url = "${globalState.serverState.currentServer.endpoint}?service=execute${endpointParams}";
-      if(useJsonp){
-        jsonpRequest(url).then((Map result) {
-          assignBexResult(result);
-        });
-      }else{
-        HttpRequest.request(url).then((req){
-          assignBexResult(json.parse(req.responseText));
-        });
-      }
+      callService("execute",endpointParams).then((result){
+        assignBexResult(result);
+        completer.complete(null);
+      }).catchError((e){
+        globalState.loading=false;
+        model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
+        completer.completeError(e);
+      });
+    }else{
+      completer.completeError(null);
     }
+    return completer.future;
   }
   
   void assignQueries(Map result){
@@ -655,46 +740,133 @@ class Model{
       }
     }
     globalState.loading=false;
-    if(result['error']==null&&globalState.serverState.queryState.currentQueryVars.length==0)
-      executeBex();
   }
   
-  void loadQuery(Query query){    
+  Future loadQuery(Query query){
+    Completer completer=new Completer();
     globalState.loading = true;
     globalState.serverState.queryState=null;
     if(query==null || query==""){
       globalState.loading=false;
+      completer.completeError(null);
     }else{
       String endpointParams = "&infocube=${query.infocube}&query=${query.query}";
-      String url = "${globalState.serverState.currentServer.endpoint}?service=getquery${endpointParams}";
-      if(useJsonp){
-        jsonpRequest(url).then((Map result) {
-          assignGetVarsResult(result);
-        });
-      }else{
-        HttpRequest.request(url).then((req){
-          assignGetVarsResult(json.parse(req.responseText));
-        });
-      }
+      callService("getquery",endpointParams).then((result){
+        assignGetVarsResult(result);
+        completer.complete(null);
+      }).catchError((e){
+        globalState.loading=false;
+        model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
+        completer.completeError(e);
+      });
     }
+    return completer.future;
   }
   
-  void loadQueries(){    
+  Future loadQueries(){
+    Completer completer=new Completer();
     globalState.serverState.currentQueryId = null;
     globalState.serverState.queryState = null;
     globalState.serverState.queries = {};
     if(globalState.serverState.currentServer!=null){
-      String url = "${globalState.serverState.currentServer.endpoint}?service=getqueries";    
-      if(useJsonp){
-        jsonpRequest(url).then((Map result) {
-          model.assignQueries(result);
-        });
-      }else{
-        HttpRequest.request(url).then((req){
-          model.assignQueries(json.parse(req.responseText));      
-        });
+      callService("getqueries","").then((result){
+        assignQueries(result);
+        completer.complete(null);
+      }).catchError((e){
+        globalState.loading=false;
+        model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
+        completer.completeError(e);
+      });
+    }else{
+      completer.completeError(null);
+    }
+    return completer.future;
+  }
+  String replaceVariableValue(String value){
+    if(value==null)
+      return null;
+    else{
+      return value.replaceAllMapped(new RegExp(r"d{{[^}]*}}"), (Match match){
+        String expression=match.group(0).substring(3, match.group(0).length-2);
+        DateTime date = new DateTime.now();
+        List<String> comps = expression.replaceAll(" ", "").split(",");
+        try{
+          int day=date.day;
+          int month=date.month;
+          int year=date.year;
+          if(comps.length>=3)
+            if(comps[2].startsWith("+")||comps[2].startsWith("-"))
+              day += int.parse(comps[2]);
+            else
+              day = int.parse(comps[2]);
+          if(comps.length>=2)
+            if(comps[1].startsWith("+")||comps[1].startsWith("-"))
+              month += int.parse(comps[1]);
+            else
+              month = int.parse(comps[1]);
+          if(comps.length>=1)
+            if(comps[0].startsWith("+")||comps[0].startsWith("-"))
+              year += int.parse(comps[0]);
+            else
+              year = int.parse(comps[0]);
+          date = new DateTime(year, month, day);
+        }catch(e){
+          print(e);
+        }
+        print("${expression}=${date.toString().substring(0,10)}");
+        return date.toString().substring(0,10);
+      });
+    }
+  }
+  void fillVarsFromHash(Map<String, String> params){
+    QueryExecutionState qes = new QueryExecutionState();
+    globalState.serverState.queryState.queryExecutionState=qes;
+    List<Variable> vars = globalState.serverState.queryState.currentQueryVars;
+    Map<String, Map<String, String>> paramVars = {};
+    for(String k in params.keys){
+      String p=k.toLowerCase();
+      if(p.startsWith("var")){
+        List<String> aux = p.split("_");
+        if(aux.length==2){
+          if(paramVars[aux[0]]==null){
+            paramVars[aux[0]]={};
+          }
+          paramVars[aux[0]][aux[1]]=params[k];
+        }
+      }else if(p.startsWith("free")){
+        qes.newAxisFree.add(new Axis(params[k],params[k]));
+      }else if(p.startsWith("col")){
+        qes.newAxisColumns.add(new Axis(params[k],params[k]));
+      }else if(p.startsWith("row")){
+        qes.newAxisRows.add(new Axis(params[k],params[k]));
       }
     }
+    for(Map<String, String> varMap in paramVars.values){
+      String vnam = varMap['vnam'];
+      var variables = vars.where((Variable v){
+        return v.id==vnam;
+      });
+      Variable variable;
+      if(variables.isEmpty){
+        variable = new Variable(vnam,vnam,false,"S",vnam,100,"CHAR");
+      }else
+        variable = variables.first;
+      if(variable!=null){
+        VariableValue variableValue = new VariableValue();
+        if(varMap['opt']!=null)
+          variableValue.operation=varMap['opt'];
+        if(varMap['sign']!=null)
+          variableValue.sign=varMap['sign'];
+        if(varMap['low']!=null)
+          variableValue.low=replaceVariableValue(varMap['low']);
+        if(varMap['high']!=null)
+          variableValue.high=replaceVariableValue(varMap['high']);
+        variable.values.add(variableValue);
+      }
+    }
+    for(Variable variable in vars)
+      if(variable.values.length>1)
+        variable.values.removeAt(0);
   }
 }
 
@@ -724,9 +896,32 @@ checkHtml5Support(){
 void main() {
   checkHtml5Support();
   Map<String, String> params = getUriParams(window.location.search);
-  /*model.user = params['user'];
-  model.key = params['key'];*/
-  model.loadQueries();
+  Map<String, String> paramsHash = getUriParams(window.location.hash);
+  model.params = new Params();
+  model.params.mock = params['mock']!=null;
+  model.params.mode = params['mode'];
+  if(model.params.mock)
+    model.globalState.serverState.servers.add(Server.MOCK);  
+  Future future;
+  if(paramsHash['serverId']!=null)
+    future = model.globalState.serverState.setServerId(paramsHash['serverId'], model.params.modeAll);
+  else
+    if(model.params.mock)
+      future = model.globalState.serverState.setServerId(Server.MOCK.id, model.params.modeAll);
+    else
+      future = model.globalState.serverState.setServerId(Server.BWP.id, model.params.modeAll);
+  if(paramsHash['queryId']!=null){
+    future.then((_){
+      Future future = model.globalState.serverState.setQueryId(paramsHash['queryId'], model.params.modeAll);
+      future.then((_){
+        model.fillVarsFromHash(paramsHash);
+        if(paramsHash['execute']!=null){
+          model.authentication.waitForAuthentication();
+          Future future = model.executeBex();
+        }
+      });
+    });
+  }
   // Enable this to use Shadow DOM in the browser.
   //useShadowDom = true;
 }

@@ -16,9 +16,9 @@ button:{
   top:1px;
 }
 .buttonsettings{
-  vertical-align:top; 
+  vertical-align:center; 
   background-image:url('settings.png');
-  background-color:#e72;
+  background-color:#fff;
   cursor:pointer;
   width:32px;
   height:32px;
@@ -26,24 +26,43 @@ button:{
 }
 .panelsettings{
   text-align:rigth;
-  vertical-align:top;
+  vertical-align:center;
   position:fixed;
   top:0px;
   right:0px;
   display:block;
-  margin:25px 50px 25px 50px;
+  margin:10px 10px 10px 10px;
+  padding:5px 5px 5px 5px;
+  background-color:#fff;
+  color: #1e62d0;
+  box-shadow: 2px 2px 2px #888;
 }
 .settings{
-  border:1px solid;
   position:fixed;
-  right:50px;
+  right:10px;
   background-color:#fff;
+  color: #1e62d0;
+  box-shadow: 2px 2px 2px #888;
+  font-weight: bold;
+}
+.settings div{
+  padding: 3px;
+}
+.settings input{
+  cursor:pointer;
+  color: #1e62d0;
+}
+.settings label{
+  cursor:pointer;
 }
 .panelheader{
   font-size: 16px;
   font-weight: bold;
   color: #1e62d0;
   margin:25px 50px 25px 50px;
+}
+.panelheader img{
+  vertical-align:bottom;
 }
 .panelfooter{
   font-size: 10px;
@@ -61,12 +80,12 @@ button:{
 .panelbextable{
 }
 .panelAxis{
-  width:615px;
   margin:25px auto 25px auto;
+  text-align: center;
 }
 .panelAxisColumn{
   display:inline-block;
-  width:190px;
+  width:230px;
   margin:0px 5px 0px 5px;
   border:1px solid;
 }
@@ -151,11 +170,15 @@ button:{
 .moving{
   opacity: 0.50;
 }
+.axisSelectPanel{
+  position:absolute;
+  text-align:center;
+  width:230px;
+}
 .button{
   background-color: #e72;
   color: #ffffff;
   border: 0;
-/*  font-size:15px;*/
   font-weight:bold;
   padding:6px 12px 6px 12px;
   text-decoration:none;
@@ -267,6 +290,12 @@ button:{
   width:130px;
   margin:25px auto 25px auto;
 }
+.selected{
+  opacity:0.50;
+}
+.selectable{
+  cursor:pointer;
+}
 .panelAlert{
   margin:25px 50px 25px 50px;
 }
@@ -279,4 +308,7 @@ button:{
 }
 .clearBoth{
   clear:both;
+}
+.invisible{
+  display:none;
 }
