@@ -1,4 +1,5 @@
 name: bex
+version: 0.1.0
 author: João Furtado
 description: Web UI app for SAP BW
 dependencies:
