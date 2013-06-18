@@ -369,6 +369,7 @@ class Model{
   }
   
   void assignQueries(Map result){
+    globalState.errorMessage=null;
     globalState.serverState.queries = {};
     for(Map i in result['queries']){
       Query query = new Query(i['infocube'], i['query'], i['description']);

@@ -240,6 +240,7 @@ class ServerState{
   Query currentQuery = null;
   
   Future setQueryId(String id, bool modeAll){
+    model.globalState.errorMessage="";
     if(modeAll){
       if(id==null||id==""){
         currentQuery=null;
