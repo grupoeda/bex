@@ -24,7 +24,7 @@
               </template>
             </div>
             <div class="panelAxisColumn">
-              <div class="axisHeader" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, null)">Caracteristicas Livres</div>              
+              <div class="axisHeader" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, null)">Informação Oculta</div>              
               <template iterate="axis in model.globalState.serverState.queryState.queryExecutionState.newAxisFree">
                 <div class="axisfree selectable {{selectedAxis==axis? 'selected':''}}" on-click="clickAxis(axis)" draggable="true" on-drag-start="_onDragStart($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)" on-drag-end="_onDragEnd($event)" on-drag-enter="_onDragEnter($event)" on-drag-over="_onDragOver($event)" on-drag-leave="_onDragLeave($event)" on-drop="_onDrop($event, model.globalState.serverState.queryState.queryExecutionState.newAxisFree, axis)">{{axis.value}}</div>
                 <template if="selectedAxis==axis">
@@ -55,7 +55,7 @@
           </div>
           <div class="panelbuttons">
             <button class="button" on-click="model.executeBex()">Executar</button>
-            <button class="button" on-click="reset()">Reinicializar</button>
+            <button class="button" on-click="reset()">Anular</button>
             <button class="button" on-click="clearNewAxisRows()">Remover Linhas</button>
             <button class="button" on-click="clearNewAxisColumns()">Remover Colunas</button>
             <button class="button" on-click="invert()">Trocar Linhas/Colunas</button>

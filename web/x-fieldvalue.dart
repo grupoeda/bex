@@ -17,6 +17,7 @@ class XFieldValue extends WebComponent {
     }
   }
   void changedHigh(Variable variable, VariableValue value){
+    if(variable.interval=="S")
     if(value.high==""&&value.interval)
       value.operation = "EQ";
     else if(value.high!=""&&!value.interval)
