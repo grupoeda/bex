@@ -57,7 +57,7 @@ button:{
   cursor:pointer;
 }
 .panelheader{
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: #1e62d0;
   margin:25px 50px 25px 50px;
@@ -219,10 +219,10 @@ button:{
 }
 .select{
   background-color: #F0F0F0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: #1e62d0;
-  height: 34px;
+  height: 26px;
   overflow: hidden;
 }
 .legend{

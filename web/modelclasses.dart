@@ -82,7 +82,7 @@ class Axis{
 
 @observable
 class Query{
-  static final Query EMPTYQUERY = new Query("","","---Seleccione uma query------------------------------------------------------------");
+  static final Query EMPTYQUERY = new Query("","","---Seleccione um relatório---------------------------------------------------------");
   String infocube;
   String query;
   String description;

@@ -12,7 +12,7 @@
   <body>
     <element name="x-bextable" constructor="XBexTable" extends="div">
       <template>        
-        <template if="model.globalState.errorMessage!=null">
+        <template if="model.globalState.errorMessage!=null && model.globalState.errorMessage!=''">
           <div class="panelAlert">
             <div class="alert">
               <strong>{{model.globalState.errorMessage}}</strong>
