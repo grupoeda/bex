@@ -330,6 +330,7 @@ class QueryExecutionState{
 
 @observable
 class ViewState{
+  bool showSystem = false;
   bool useDescription = true;  
   bool showInformation = false;
   bool showAxis = false;

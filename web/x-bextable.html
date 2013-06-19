@@ -11,7 +11,7 @@
   </head>
   <body>
     <element name="x-bextable" constructor="XBexTable" extends="div">
-      <template>        
+      <template>
         <template if="model.globalState.errorMessage!=null && model.globalState.errorMessage!=''">
           <div class="panelAlert">
             <div class="alert">
@@ -24,11 +24,10 @@
           <button class="buttonsettings" on-click="toogleShowSettings()"></button>
           <template if="model.viewState.showSettings">
             <div class="settings">
+              <div><input id="checkShowSystem" type="checkbox" bind-checked="model.viewState.showSystem"><label for="checkShowSystem">Escolher Sistema</label></div>
               <div><input id="checkUseDescription" type="checkbox" bind-checked="model.viewState.useDescription"><label for="checkUseDescription">Descrições</label></div>
-              <template if="model.params.modeAll">
-                <div><input id="checkShowInformation" type="checkbox" bind-checked="model.viewState.showInformation"><label for="checkShowInformation">Informação Relatório</label></div>
-                <div><input id="checkShowAxis" type="checkbox" bind-checked="model.viewState.showAxis"><label for="checkShowAxis">Configuração Eixos</label></div>
-              </template>
+              <div><input id="checkShowInformation" type="checkbox" bind-checked="model.viewState.showInformation"><label for="checkShowInformation">Informação Relatório</label></div>
+              <div><input id="checkShowAxis" type="checkbox" bind-checked="model.viewState.showAxis"><label for="checkShowAxis">Configuração Eixos</label></div>              
               <div><input id="checkShowTotals" type="checkbox" bind-checked="model.viewState.showTotals"><label for="checkShowTotals">Totais</label></div>
               <div><input id="checkShowGrid" type="checkbox" bind-checked="model.viewState.showGrid"><label for="checkShowGrid">Grelha</label></div>
               <div><input id="checkExpandTableText" type="checkbox" bind-checked="model.viewState.expandTableText"><label for="checkExpandTableText">Expandir Relatório</label></div>
@@ -38,9 +37,11 @@
         <template if="model.params.modeAll">
           <div class="panelheader">
             <img src="../logo.png">
-            <select template iterate="server in model.globalState.serverState.servers" class="select" bind-value="model.globalState.serverState.serverId">
-              <option selected="{{server.id==model.globalState.serverState.serverId}}" value="{{server.id}}">{{server.name}}</option>
-            </select>
+            <template if="model.viewState.showSystem">
+              <select template iterate="server in model.globalState.serverState.servers" class="select" bind-value="model.globalState.serverState.serverId">
+                <option selected="{{server.id==model.globalState.serverState.serverId}}" value="{{server.id}}">{{server.name}}</option>
+              </select>
+            </template>
             <select template iterate="query in model.globalState.serverState.queryList" class="select" bind-value="model.globalState.serverState.currentQueryId">
               <option selected="{{query.id==model.globalState.serverState.currentQueryId}}" value="{{query.id}}">{{query.value}}</option>
             </select> 
