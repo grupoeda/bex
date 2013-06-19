@@ -387,6 +387,15 @@ class Model{
         if(i['vartyp']=='1')
           globalState.serverState.queryState.currentQueryVars.add(new Variable(i['vnam'],i['vtxt'],i['entrytp']=='1'?true:false,i['vparsel'],i['iobjnm'],int.parse(i['outputlen']),i['datatp']));
       }
+      globalState.serverState.queryState.currentQueryVars.sort((Variable a, Variable b) {
+        if(a.obligatory)
+          if(b.obligatory)
+            return 0;
+          else
+            return -1;
+        else
+          return 1;
+      });
     }
     globalState.loading=false;
   }
