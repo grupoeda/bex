@@ -257,10 +257,12 @@ class Model{
   String fillVariableValue(Variable variable, int index, bool low){
     String value;
     bool setValue = false;
-    if(low)
+    if(low){
       value = variable.values[index].low;
-    else{
+      globalState.lastValues["l-${variable.id}"]=value;
+    }else{      
       value = variable.values[index].high;
+      globalState.lastValues["h-${variable.id}"]=value;
       if(!variable.values[index].interval){
         variable.values[index].high = "";
         return "";
@@ -291,11 +293,11 @@ class Model{
         globalState.errorMessage='O valor "${value}" não é uma data';
         return null;
       }
-    }
+    }    
     if(setValue){
       if(low)
         variable.values[index].low = value;
-      else
+      else        
         variable.values[index].high = value;
     }
     return value;
@@ -396,6 +398,14 @@ class Model{
         else
           return 1;
       });
+      for(Variable i in globalState.serverState.queryState.currentQueryVars){
+        String high = globalState.lastValues["h-${i.id}"];
+        if(high!=null)
+          i.values[0].high=high;
+        String low = globalState.lastValues["l-${i.id}"];
+        if(low!=null)
+          i.values[0].low=low;
+      }
     }
     globalState.loading=false;
   }

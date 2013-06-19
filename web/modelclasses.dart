@@ -104,7 +104,6 @@ class Query{
 
 @observable
 class VariableValue{
-  String guid;
   String operation;
   String sign;
   String low;
@@ -345,6 +344,7 @@ class GlobalState{
   String errorMessage=null;
   bool loading = false;
   ServerState serverState = new ServerState();
+  Map<String, String> lastValues={};
 }
 
 @observable
