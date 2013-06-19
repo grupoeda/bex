@@ -318,17 +318,13 @@ class QueryExecutionState{
   }
   
   void clearNewAxisColumns(){
-    newAxisFree = toObservable([]);
-    newAxisFree.addAll(axisFree);    
-    newAxisFree.addAll(axisColumns);
+    newAxisFree.addAll(newAxisColumns);
     newAxisColumns = toObservable([]);
   }
   
   void clearNewAxisRows(){
-    newAxisFree = toObservable([]);
-    newAxisFree.addAll(axisFree);
-    newAxisFree.addAll(axisRows);
-    newAxisRows = toObservable([]);    
+    newAxisFree.addAll(newAxisRows);
+    newAxisRows = toObservable([]);
   }
 }
 
