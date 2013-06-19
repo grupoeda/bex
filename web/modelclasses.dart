@@ -215,6 +215,7 @@ class ServerState{
       return currentServer.id;
   }
   set serverId(String id){
+    window.location.hash = "";
     setServerId(id,true);
   }
   Map<String, Query> queries={};
@@ -234,11 +235,12 @@ class ServerState{
       return currentQuery.id;
   }
   set currentQueryId(String id){
+    window.location.hash = "";
     setQueryId(id, true);
   }
   Query currentQuery = null;
   
-  Future setQueryId(String id, bool modeAll){
+  Future setQueryId(String id, bool modeAll){    
     model.globalState.errorMessage="";
     if(modeAll){
       if(id==null||id==""){
@@ -258,7 +260,7 @@ class ServerState{
       return completer.future;
     }
   }
-  Future setServerId(String id, bool modeAll){    
+  Future setServerId(String id, bool modeAll){
     if(id==null||id==""){
       currentServer = null;
     }else{
