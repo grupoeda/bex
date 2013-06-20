@@ -335,7 +335,10 @@ class Model{
             String high = fillVariableValue(variable, index, false);
             if(low==null||high==null)
               validate = false;
-            hash += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${variable.values[index].operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";                  
+            String operation = variable.values[index].operation;
+            if(variable.interval=="I"&&(high==null||high==""))
+              operation="EQ";
+            hash += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";                  
             i++;
             filled = true;
           } else if (!filled&&variable.obligatory){
