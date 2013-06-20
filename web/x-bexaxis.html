@@ -55,7 +55,7 @@
           </div>
           <div class="panelbuttons">
             <button class="button" on-click="model.executeBex()">Executar</button>
-            <button class="button" on-click="reset()">Anular</button>
+            <button class="button" on-click="reset()" disabled="{{!model.globalState.serverState.queryState.queryExecutionState.undoAxisPossible}}">Anular</button>
             <button class="button" on-click="clearNewAxisRows()">Remover Linhas</button>
             <button class="button" on-click="clearNewAxisColumns()">Remover Colunas</button>
             <button class="button" on-click="invert()">Trocar Linhas/Colunas</button>

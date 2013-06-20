@@ -300,6 +300,20 @@ class QueryExecutionState{
   List<Axis> axisFree = toObservable([]);
   List<Axis> axisColumns = toObservable([]);
   List<Axis> axisRows = toObservable([]);
+  bool get undoAxisPossible{
+    if(newAxisFree.length!=axisFree.length||newAxisColumns.length!=axisColumns.length||newAxisRows.length!=axisRows.length)
+      return true;
+    for(int i=0; i<axisFree.length;i++)
+      if(axisFree[i]!=newAxisFree[i])
+        return true;
+    for(int i=0; i<axisColumns.length;i++)
+      if(axisColumns[i]!=newAxisColumns[i])
+        return true;
+    for(int i=0; i<axisRows.length;i++)
+      if(axisRows[i]!=newAxisRows[i])
+        return true;
+    return false;
+  }
   List<List<Cell>> get bextablechecktotals{
     if(model.viewState.showTotals)
       return bextable;
