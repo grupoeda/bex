@@ -103,6 +103,14 @@ class Query{
 }
 
 @observable
+class CharValue{
+  String id;
+  String desc;
+  
+  CharValue(this.id, this.desc);
+}
+
+@observable
 class VariableValue{
   String operation;
   String sign;
@@ -164,11 +172,12 @@ class Variable{
   bool get customInput{
     return customDateInput;
   }
-  List<Map> possibleValues;
+  bool get hasValues{
+    return !customInput&&dataType!="DATS";
+  }
   List<VariableValue> values;
   
   Variable(this.id,this.description,this.obligatory,this.interval,this.charName, this.length, this.dataType){
-    possibleValues = [];
     VariableValue value = new VariableValue();    
     if(interval=='I')
       value.operation = "BT";
@@ -360,7 +369,8 @@ class GlobalState{
   String errorMessage=null;
   bool loading = false;
   ServerState serverState = new ServerState();
-  Map<String, String> lastValues={};
+  Map<String, String> lastValues=toObservable({});
+  Map<String, List<CharValue>> charValues=toObservable({});
 }
 
 @observable

@@ -4,6 +4,7 @@
   <head>
     <meta charset="utf-8">
     <link rel="import" href="packages/datepicker/components/xdateinput.html">
+    <link rel="import" href="x-values.html">
   </head>
   <body>
     <element name="x-fieldvalue" constructor="XFieldValue" extends="div">
@@ -32,7 +33,8 @@
             <xdateinput class="fieldInput" inputid="{{variable.id}}" inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.low"></xdateinput>
           </template>
           <template if="!variable.customInput">
-            <input class="fieldInput" id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" maxlength="{{variable.length}}" bind-value="value.low">
+            <input class="fieldInput" id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" maxlength="{{variable.length}}" on-focus="showLowValues=true" bind-value="value.low">
+            <x-values bind-show="showLowValues" values="{{model.globalState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.low"></x-values>
           </template>                  
           <template if="variable.interval=='S' || variable.interval=='I'">
             <label>até</label>
@@ -40,7 +42,8 @@
               <xdateinput class="fieldInput" inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.high" on-focus="changedHigh(variable, value)"></xdateinput>
             </template>
             <template if="!variable.customInput">
-              <input class="fieldInput" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" maxlength="{{variable.length}}" bind-value="value.high" on-change="changedHigh(variable, value)">
+              <input class="fieldInput" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" maxlength="{{variable.length}}" bind-value="value.high" on-focus="showHighValues=true" on-change="changedHigh(variable, value)">
+              <x-values bind-show="showHighValues" values="{{model.globalState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.high"></x-values>
             </template>
             <template if="variable.interval=='S'">
               <button class="button2" on-click="add()">+</button>

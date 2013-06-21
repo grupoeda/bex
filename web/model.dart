@@ -453,6 +453,7 @@ class Model{
     }
     return completer.future;
   }
+  
   String replaceVariableValue(String dataType, String value){
     if(value==null)
       return null;
@@ -545,6 +546,29 @@ class Model{
     for(Variable variable in vars)
       if(variable.values.length>1)
         variable.values.removeAt(0);
+  }
+  
+  void assignData(String charName, Map result){
+    List<CharValue> list = [];
+    if(result['error']!=null)
+      model.globalState.errorMessage=result['error'];
+    else
+      for(Map i in result['data']){
+        list.add(new CharValue(i['id'],i['desc']));
+      }
+    model.globalState.charValues[charName]=list;
+  }
+  
+  Future loadData(String charName){
+    Completer completer=new Completer();
+    callService("getdata","").then((result){
+      assignData(charName, result);
+      completer.complete(null);
+    }).catchError((e){
+      model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
+      completer.completeError(e);
+    });
+    return completer.future;
   }
 }
 

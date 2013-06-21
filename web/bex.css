@@ -281,6 +281,14 @@ button:{
   padding:5px 5px 5px 5px;
   margin:0px;
 }
+.panelInnerValues{
+  position:absolute;
+  border:1px solid;
+  background:#fff;
+}
+.panelValues{
+  display:inline;
+}
 .border{
   border:1px solid #000;
 }
