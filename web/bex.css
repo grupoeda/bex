@@ -8,6 +8,15 @@ body {
 button:{
   cursor:pointer;
 }
+input:{
+  border: 1px solid;
+}
+select:{
+  border: 1px solid;
+}
+.custominput{
+  border: 1px solid;
+}
 .buttonsettings:hover{
   background-color: #f93;
 }
@@ -22,6 +31,7 @@ button:{
   width:32px;
   height:32px;
   border:none;
+  vertical-align:text-bottom;
 }
 .panelsettings{
   text-align:rigth;
@@ -250,6 +260,7 @@ button:{
 .fieldSelect{
   display:inline-block;
   color: #1e62d0;
+  border:
 }
 .xdateinput_parent{
   text-transform:uppercase;
@@ -281,13 +292,25 @@ button:{
   padding:5px 5px 5px 5px;
   margin:0px;
 }
-.panelInnerValues{
-  position:absolute;
-  border:1px solid;
-  background:#fff;
-}
 .panelValues{
-  display:inline;
+  position:absolute;
+  margin-top:10px;
+  position:absolute;
+  padding:5px 5px 5px 5px;
+  z-index:999;
+  border:1px solid;
+  background-color:#fff;  
+  color: #1e62d0;
+  min-width:200px;
+  white-space:nowrap;
+}
+.panelValues_parent{
+  display:inline-block;
+  position:relative;
+  width:0px;
+  height:0px;
+  margin:0px;
+  padding:0px;
 }
 .border{
   border:1px solid #000;
@@ -304,6 +327,22 @@ button:{
 }
 .selectable{
   cursor:pointer;
+}
+.close{
+  text-align:right;
+}
+.close button{
+  color: #1e62d0;
+  background-color: #fff;
+  border: 0;
+  font-weight:bold;
+  padding:2px 7px 2px 7px;
+  border:0;
+  text-decoration:none;
+}
+.close button:hover{
+  background-color: #1e62d0;
+  color: #fff;
 }
 .panelAlert{
   margin:25px 50px 25px 50px;

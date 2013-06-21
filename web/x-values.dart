@@ -28,4 +28,13 @@ class XValues extends WebComponent{
       more = true;
     return more ? res.take(20).toList():res.toList();
   }
+
+  void choose(String id){
+    valueid = id;
+    show = false;
+  }
+  
+  void close(){
+    show = false;
+  }
 }

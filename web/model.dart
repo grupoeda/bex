@@ -370,14 +370,14 @@ class Model{
         assignBexResult(result);
         hash="execute&serverId=${globalState.serverState.serverId}&queryId=${globalState.serverState.currentQueryId}${hash}";
         window.location.hash=hash;
-        completer.complete(null);
+        completer.complete();
       }).catchError((e){
         globalState.loading=false;
         model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
         completer.completeError(e);
       });
     }else{
-      completer.completeError(null);
+      completer.completeError(new Exception("Erro no executeBex()"));
     }
     return completer.future;
   }
@@ -385,9 +385,13 @@ class Model{
   void assignQueries(Map result){
     globalState.errorMessage=null;
     globalState.serverState.queries = {};
-    for(Map i in result['queries']){
-      Query query = new Query(i['infocube'], i['query'], i['description']);
-      globalState.serverState.queries[query.id] = query;
+    if(result['error']!=null)
+      globalState.errorMessage=result['error'];
+    else{
+      for(Map i in result['queries']){
+        Query query = new Query(i['infocube'], i['query'], i['description']);
+        globalState.serverState.queries[query.id] = query;
+      }
     }
   }
   
@@ -428,12 +432,12 @@ class Model{
     globalState.serverState.queryState=null;
     if(query==null || query==""){
       globalState.loading=false;
-      completer.completeError(null);
+      completer.complete();
     }else{
       String endpointParams = "&infocube=${query.infocube}&query=${query.query}";
       callService("getquery",endpointParams).then((result){
         assignGetVarsResult(result);
-        completer.complete(null);
+        completer.complete();
       }).catchError((e){
         globalState.loading=false;
         model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
@@ -451,14 +455,14 @@ class Model{
     if(globalState.serverState.currentServer!=null){
       callService("getqueries","").then((result){
         assignQueries(result);
-        completer.complete(null);
+        completer.complete();
       }).catchError((e){
         globalState.loading=false;
         model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
         completer.completeError(e);
       });
     }else{
-      completer.completeError(null);
+      completer.completeError(new Exception("Erro no loadQueries()"));
     }
     return completer.future;
   }
@@ -562,17 +566,18 @@ class Model{
     if(result['error']!=null)
       model.globalState.errorMessage=result['error'];
     else
-      for(Map i in result['data']){
+      for(Map i in result['values']){
         list.add(new CharValue(i['id'],i['desc']));
       }
+    list.sort((CharValue x,CharValue y)=>x.id.compareTo(y.id));
     model.globalState.charValues[charName]=list;
   }
   
   Future loadData(String charName){
     Completer completer=new Completer();
-    callService("getdata","").then((result){
+    callService("getvalues","&charname=${charName}").then((result){
       assignData(charName, result);
-      completer.complete(null);
+      completer.complete();
     }).catchError((e){
       model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
       completer.completeError(e);

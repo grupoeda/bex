@@ -7,17 +7,20 @@
   <body>
     <element name="x-values" constructor="XValues" extends="span">
       <template>
-        <template if="variable.hasValues && show">
-          <div class="panelValues">
-            <div class="panelInnerValues">
+        <template if="variable.hasValues && show && charValues.length>0">
+          <span class="panelValues_parent">            
+            <div class="panelValues">              
+              <div class="close">
+                <button on-click="close()">x</button>
+              </div>
               <template iterate="i in charValues">
-                <div>{{i.id}} {{i.desc}}</div>                
+                <div class="selectable" on-click="choose(i.id)"><strong>{{i.id}}</strong> {{i.desc}}</div>                
               </template>
               <template if="more">
-                <div>Mais resultados disponiveis...</div>
+                <div><br><strong>Mais resultados disponiveis...</strong></div>
               </template>
             </div>
-          </div>
+          </span>
         </template>
       </template>
       <script type="application/dart" src="x-values.dart"></script>
