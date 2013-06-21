@@ -188,7 +188,9 @@ class Model{
           if(i==0&&j==0){
             qes.bextable[0][0].show=true;
             qes.bextable[0][0].rowspan=qes.bexraw['col_info'].length;
-            qes.bextable[0][0].colspan=qes.bexraw['row_info'].length-1;            
+            qes.bextable[0][0].colspan=qes.bexraw['row_info'].length-1;
+            qes.bextable[0][0].rowspanTotal=qes.bextable[0][0].rowspan;
+            qes.bextable[0][0].colspanTotal=qes.bextable[0][0].colspan;
           }else          
             qes.bextable[i][j].show=false;
         }
@@ -196,6 +198,7 @@ class Model{
       if(qes.bextable.length>0&&qes.bexraw['col_info'].length>0)
         for(int j = qes.bexraw['row_info'].length; j<qes.bextable[0].length;j++){
           qes.bextable[qes.bexraw['col_info'].length-1][j].rowspan+=1;
+          qes.bextable[qes.bexraw['col_info'].length-1][j].rowspanTotal+=1;
           qes.bextable[qes.bexraw['col_info'].length][j].show=false;
         }
       //Agrupamento de linhas
@@ -209,6 +212,9 @@ class Model{
             if(qes.bextable[i][j].value==qes.bextable[indexes[j]][j].value){
               qes.bextable[indexes[j]][j].rowspan+=1;
               qes.bextable[i][j].show=false;
+              if(!qes.bextable[i][j].totalRow){
+                qes.bextable[indexes[j]][j].rowspanTotal+=1;
+              }
             }else{
               for(int k = j; k<qes.bexraw['row_info'].length;k++)
                 indexes[k]=i;
@@ -234,6 +240,9 @@ class Model{
             if(qes.bextable[i][j].value==qes.bextable[i][indexes[i]].value){
               qes.bextable[i][indexes[i]].colspan+=1;
               qes.bextable[i][j].show=false;
+              if(!qes.bextable[i][j].totalColumn){
+                qes.bextable[i][indexes[i]].colspanTotal+=1;
+              }
             }else{
               for(int k = i; k<qes.bexraw['col_info'].length;k++)
                 indexes[k]=j;

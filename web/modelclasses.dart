@@ -17,16 +17,24 @@ class Cell{
   String description;
   int type;
   bool odd = false;
+  int colspanTotal = 1;
+  int rowspanTotal = 1;
   int colspan = 1;
   int get colspanShow{
     if(model.viewState.showGrid)
-      return colspan;
+      if(model.viewState.showTotals)
+        return colspan;
+      else
+        return colspanTotal;
     else return 1;
   }
   int rowspan = 1;
   int get rowspanShow{
     if(model.viewState.showGrid)
-      return rowspan;
+      if(model.viewState.showTotals)
+        return rowspan;
+      else
+        return rowspanTotal;
     else return 1;
   }
   bool show = true;
