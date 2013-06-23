@@ -4,7 +4,6 @@ import 'dart:json' as json;
 import 'dart:html';
 import 'dart:async';
 import 'package:web_ui/web_ui.dart';
-import 'package:jsonp_request/jsonp_request.dart';
 import 'package:sharepointauth/authentication.dart';
 
 part 'modelclasses.dart';
@@ -31,25 +30,19 @@ class Model{
       url = "${globalState.serverState.currentServer.endpoint}mock_${service}.json?${endpointParams}";
     else
       url = "${globalState.serverState.currentServer.endpoint}?service=${service}${endpointParams}";
-    if(useJsonp){
-      jsonpRequest(url).then((result) {
+    HttpRequest.request(url).then((req){
+      try{
+        var result = json.parse(req.responseText);
         completer.complete(result);
-      });
-    }else{      
-      HttpRequest.request(url).then((req){
-        try{
-          var result = json.parse(req.responseText);
-          completer.complete(result);
-        }catch (e,s){
-          print("Erro no serviço ${service}: ${e}");
-          print(s);
-          completer.completeError(e);
-        }
-      }).catchError((e){
+      }catch (e,s){
         print("Erro no serviço ${service}: ${e}");
+        print(s);
         completer.completeError(e);
-      });
-    }
+      }
+    }).catchError((e){
+      print("Erro no serviço ${service}: ${e}");
+      completer.completeError(e);
+    });
     return completer.future;
   }
   
@@ -139,9 +132,6 @@ class Model{
         line.add(new Cell(cell['sym_name'], cell['sym_caption'], Cell.CHARDATAROW, false));
         line.add(new Cell(cell['sym_value'], cell['sym_value'], Cell.CELL, false));
         qes.bexinfo.add(line);
-        /*if(cell['sym_name']=="REPTXTLG"){
-          currentQuery.description=cell['sym_value'];
-        }*/
       }
       for(int i = 0; i<qes.bextable.length;i++){
         bool total = false;
@@ -571,6 +561,11 @@ class Model{
       }
     list.sort((CharValue x,CharValue y)=>x.id.compareTo(y.id));
     model.globalState.charValues[charName]=list;
+    model.globalState.charValuesControl.add(charName);
+    if(model.globalState.charValuesControl.length>10){
+      model.globalState.charValues[model.globalState.charValuesControl[0]]=null;
+      model.globalState.charValuesControl.removeAt(0);
+    }
   }
   
   Future loadData(String charName){

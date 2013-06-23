@@ -379,6 +379,7 @@ class GlobalState{
   ServerState serverState = new ServerState();
   Map<String, String> lastValues=toObservable({});
   Map<String, List<CharValue>> charValues=toObservable({});
+  List<String> charValuesControl = [];
 }
 
 @observable

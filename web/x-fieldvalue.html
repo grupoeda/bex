@@ -30,20 +30,20 @@
             </select>
           </template>
           <template if="variable.customDateInput">
-            <xdateinput class="fieldInput" inputid="{{variable.id}}" inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.low"></xdateinput>
+            <xdateinput inputid="{{variable.id}}" inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.low"></xdateinput>
           </template>
           <template if="!variable.customInput">
-            <x-values bind-show="showLowValues" values="{{model.globalState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.low"></x-values>
-            <input class="fieldInput" id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" on-focus="showLowValues=true" bind-value="value.low">            
+            <x-values class="panelValues_parent" bind-show="showLowValues" values="{{model.globalState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.low"></x-values>
+            <input id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" on-focus="showLowValues=true" bind-value="value.low">            
           </template>                  
           <template if="variable.interval=='S' || variable.interval=='I'">
             <label>até</label>
             <template if="variable.customDateInput">
-              <xdateinput class="fieldInput" inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.high" on-focus="changedHigh(variable, value)"></xdateinput>
+              <xdateinput inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.high" on-focus="changedHigh(variable, value)"></xdateinput>
             </template>
             <template if="!variable.customInput">
-              <x-values bind-show="showHighValues" values="{{model.globalState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.high"></x-values>             
-              <input class="fieldInput" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" bind-value="value.high" on-focus="showHighValues=true" on-change="changedHigh(variable, value)">
+              <x-values class="panelValues_parent" bind-show="showHighValues" values="{{model.globalState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.high"></x-values>             
+              <input placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" bind-value="value.high" on-focus="showHighValues=true" on-change="changedHigh(variable, value)">
             </template>
             <template if="variable.interval=='S'">
               <button class="button2" on-click="add()">+</button>
