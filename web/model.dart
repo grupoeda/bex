@@ -311,65 +311,67 @@ class Model{
   
   Future executeBex(){
     Completer completer=new Completer();
-    bool validate = true;
-    if(globalState.serverState==null||globalState.serverState.queryState==null)
-      validate = false;
-    if(validate&&authentication==null){
-      globalState.errorMessage="Nenhum utilizador autenticado";
-      validate = false;
-    }
-    String endpointParams="";
-    String hash="";
-    if(validate){
-      endpointParams = "&infocube=${globalState.serverState.currentQuery.infocube}&query=${globalState.serverState.currentQuery.query}";
-      endpointParams += "&USER=${authentication.user}";
-      endpointParams += "&KEY=${authentication.key}";
-      endpointParams += "&DATETIME=${authentication.datetime}";      
-      num i = 1;
-      for(Variable variable in globalState.serverState.queryState.currentQueryVars){
-        bool filled = false;
-        for(num index = 0; index<variable.values.length;index++){
-          if(variable.values[index].low!=""||variable.values[index].high!=""){
-            String low = fillVariableValue(variable, index, true);
-            String high = fillVariableValue(variable, index, false);
-            if(low==null||high==null)
+    model.authentication.waitForAuthentication().then((_){
+      bool validate = true;
+      if(globalState.serverState==null||globalState.serverState.queryState==null)
+        validate = false;
+      if(validate&&authentication==null){
+        globalState.errorMessage="Nenhum utilizador autenticado";
+        validate = false;
+      }
+      String endpointParams="";
+      String hash="";
+      if(validate){
+        endpointParams = "&infocube=${globalState.serverState.currentQuery.infocube}&query=${globalState.serverState.currentQuery.query}";
+        endpointParams += "&USER=${authentication.user}";
+        endpointParams += "&KEY=${authentication.key}";
+        endpointParams += "&DATETIME=${authentication.datetime}";      
+        num i = 1;
+        for(Variable variable in globalState.serverState.queryState.currentQueryVars){
+          bool filled = false;
+          for(num index = 0; index<variable.values.length;index++){
+            if(variable.values[index].low!=""||variable.values[index].high!=""){
+              String low = fillVariableValue(variable, index, true);
+              String high = fillVariableValue(variable, index, false);
+              if(low==null||high==null)
+                validate = false;
+              String operation = variable.values[index].operation;
+              if(variable.interval=="I"&&(high==null||high==""))
+                operation="EQ";
+              hash += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";                  
+              i++;
+              filled = true;
+            } else if (!filled&&variable.obligatory){
+              globalState.errorMessage='O filtro "${variable.name}" é obrigatório';
               validate = false;
-            String operation = variable.values[index].operation;
-            if(variable.interval=="I"&&(high==null||high==""))
-              operation="EQ";
-            hash += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";                  
-            i++;
-            filled = true;
-          } else if (!filled&&variable.obligatory){
-            globalState.errorMessage='O filtro "${variable.name}" é obrigatório';
-            validate = false;
+            }
           }
         }
       }
-    }
-    if(validate && globalState.serverState.queryState.queryExecutionState!=null){
-      hash += fillUrlAxis("FREE", globalState.serverState.queryState.queryExecutionState.newAxisFree);
-      hash += fillUrlAxis("COL", globalState.serverState.queryState.queryExecutionState.newAxisColumns);
-      hash += fillUrlAxis("ROW", globalState.serverState.queryState.queryExecutionState.newAxisRows);
-    }
-    if(validate){
-      endpointParams+=hash;
-      globalState.loading=true;
-      globalState.serverState.queryState.queryExecutionState = new QueryExecutionState();
-      callService("execute",endpointParams).then((result){
-        assignBexResult(result);
-        hash="execute&serverId=${globalState.serverState.serverId}&queryId=${globalState.serverState.currentQueryId}${hash}";
-        window.location.hash=hash;
-        completer.complete();
-      }).catchError((e){
-        globalState.loading=false;
-        model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
-        completer.completeError(e);
-      });
-    }else{
-      completer.completeError(new Exception("Erro no executeBex()"));
-    }
-    return completer.future;
+      if(validate && globalState.serverState.queryState.queryExecutionState!=null){
+        hash += fillUrlAxis("FREE", globalState.serverState.queryState.queryExecutionState.newAxisFree);
+        hash += fillUrlAxis("COL", globalState.serverState.queryState.queryExecutionState.newAxisColumns);
+        hash += fillUrlAxis("ROW", globalState.serverState.queryState.queryExecutionState.newAxisRows);
+      }
+      if(validate){
+        endpointParams+=hash;
+        globalState.loading=true;
+        globalState.serverState.queryState.queryExecutionState = new QueryExecutionState();
+        callService("execute",endpointParams).then((result){
+          assignBexResult(result);
+          hash="execute&serverId=${globalState.serverState.serverId}&queryId=${globalState.serverState.currentQueryId}${hash}";
+          window.location.hash=hash;
+          completer.complete();
+        }).catchError((e){
+          globalState.loading=false;
+          model.globalState.errorMessage='Erro na execução do serviço no servidor "${globalState.serverState.currentServer.name}"';
+          completer.completeError(e);
+        });
+      }else{
+        completer.completeError(new Exception("Erro no executeBex()"));
+      }
+    });
+    return Future.wait([completer.future, model.authentication.completer.future]);
   }
   
   void assignQueries(Map result){
@@ -627,9 +629,7 @@ void main() {
       future.then((_){
         model.fillVarsFromHash(paramsHash);
         if(paramsHash['execute']!=null){
-          model.authentication.waitForAuthentication().then((_){
-            model.executeBex();
-          });
+          model.executeBex();
         }
       });
     });
