@@ -130,6 +130,14 @@ class VariableValue{
     return operation=="BT"||operation=="NB";
   }
   
+  void changed(variable, isHigh){
+    if(isHigh&&variable.interval=="S")
+      if(high==""&&interval)
+        operation = "EQ";
+      else if(high!=""&&!interval)
+        operation = "BT";
+  }
+  
   VariableValue(){
     operation = "EQ";
     sign = "I";
@@ -304,6 +312,7 @@ class QueryState{
       return x.obligatory;
     });
   }
+  Map<String, List<CharValue>> charValues=toObservable({});
 }
 
 @observable
@@ -378,8 +387,6 @@ class GlobalState{
   bool loading = false;
   ServerState serverState = new ServerState();
   Map<String, String> lastValues=toObservable({});
-  Map<String, List<CharValue>> charValues=toObservable({});
-  List<String> charValuesControl = [];
 }
 
 @observable

@@ -359,6 +359,11 @@ select:{
   background-color: #1e62d0;
   color: #fff;
 }
+.closing{
+  opacity:0;
+  transition-property:opacity;
+  transition-duration:0.5s;
+}
 .panelAlert{
   margin:25px 50px 25px 50px;
 }

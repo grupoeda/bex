@@ -1,5 +1,7 @@
 import 'model.dart';
 import 'package:web_ui/web_ui.dart';
+import 'dart:html';
+import 'dart:async';
 
 class XValues extends WebComponent{
 @observable
@@ -9,9 +11,14 @@ class XValues extends WebComponent{
 @observable
   String valueid;
 @observable
+  bool high = false;
+@observable
   Map<String, List<CharValue>> values;
 @observable
-  bool show;
+  bool showDiv=false;
+@observable
+  bool closing=false;
+  Timer timer;
 @observable
   int page=1;
 @observable
@@ -47,26 +54,42 @@ class XValues extends WebComponent{
       return [];
   }
 
+  void show(){
+    closing = false;
+    showDiv = true;
+  }
+  
   void choose(String id){
     valueid = id;
-    show = false;
+    showDiv = false;
   }
   
   void close(){
-    show = false;
+    closing=true;
+    if(timer!=null)
+      timer.cancel();
+    timer = new Timer(new Duration(seconds:1), (){
+      if(closing){
+        showDiv=false;
+      }
+    });
   }
   
   void nextPage(){
+    closing=false;
     if(page<lastPage)
       page+=1;
     else
       page=1;
+    this.host.query("input").focus();
   }
   
   void prevPage(){
+    closing=false;
     if(page>1)
       page-=1;
     else
       page=lastPage;
+    this.host.query("input").focus();
   }
 }

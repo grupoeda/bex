@@ -562,12 +562,7 @@ class Model{
         list.add(new CharValue(i['id'],i['desc']));
       }
     list.sort((CharValue x,CharValue y)=>x.id.compareTo(y.id));
-    model.globalState.charValues[charName]=list;
-    model.globalState.charValuesControl.add(charName);
-    if(model.globalState.charValuesControl.length>10){
-      model.globalState.charValues[model.globalState.charValuesControl[0]]=null;
-      model.globalState.charValuesControl.removeAt(0);
-    }
+    model.globalState.serverState.queryState.charValues[charName]=list;
   }
   
   Future loadData(String charName){

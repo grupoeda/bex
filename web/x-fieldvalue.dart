@@ -21,11 +21,4 @@ class XFieldValue extends WebComponent {
       variable.removeVariableValue(value);
     }
   }
-  void changedHigh(Variable variable, VariableValue value){
-    if(variable.interval=="S")
-    if(value.high==""&&value.interval)
-      value.operation = "EQ";
-    else if(value.high!=""&&!value.interval)
-      value.operation = "BT";
-  }
 }

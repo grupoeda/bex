@@ -33,17 +33,15 @@
             <xdateinput inputid="{{variable.id}}" inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.low"></xdateinput>
           </template>
           <template if="!variable.customInput">
-            <x-values class="panelValues_parent" bind-show="showLowValues" values="{{model.globalState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.low"></x-values>
-            <input id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" on-focus="showLowValues=true" bind-value="value.low">            
+            <x-values id="vlow" values="{{model.globalState.serverState.queryState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.low" high="{{false}}"></x-values>            
           </template>                  
           <template if="variable.interval=='S' || variable.interval=='I'">
             <label>até</label>
             <template if="variable.customDateInput">
-              <xdateinput inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.high" on-focus="changedHigh(variable, value)"></xdateinput>
+              <xdateinput inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.high" on-focus="value.changed(variable, true)"></xdateinput>
             </template>
             <template if="!variable.customInput">
-              <x-values class="panelValues_parent" bind-show="showHighValues" values="{{model.globalState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.high"></x-values>             
-              <input placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" bind-value="value.high" on-focus="showHighValues=true" on-change="changedHigh(variable, value)">
+              <x-values id="vhigh" values="{{model.globalState.serverState.queryState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.high" high="{{true}}"></x-values>              
             </template>
             <template if="variable.interval=='S'">
               <button class="button2" on-click="add()">+</button>

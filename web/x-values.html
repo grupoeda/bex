@@ -7,28 +7,28 @@
   <body>
     <element name="x-values" constructor="XValues" extends="span">
       <template>
-        <template if="variable.hasValues && show && charValues.length>0">                      
-          <div class="panelValues">              
-            <div class="close">
-              <button on-click="close()">x</button>
+        <span class="panelValues_parent">
+          <template if="variable.hasValues && showDiv && charValues.length>0">                      
+            <div class="panelValues {{closing?'closing':''}}">              
+              <template if="lastPage>1">
+                <div class="centerButtons">
+                  <button class="button3" on-click="prevPage()">&larr;</button>
+                  <span><strong>Página {{page}}/{{lastPage}}</strong></span>
+                  <button class="button3" on-click="nextPage()">&rarr;</button>
+                </div>
+                <br>
+              </template>
+              <template iterate="i in charValues">
+                <div class="selectable coloredHover" on-click="choose(i.id)"><strong>{{i.id}}</strong> {{i.desc}}</div>                
+              </template>
+              <template if="page<lastPage">
+                <br>
+                <div class="selectable" on-click="nextPage()"><strong>Mais resultados disponiveis...</strong></div>
+              </template>
             </div>
-            <template if="lastPage>1">
-              <div class="centerButtons">
-                <button class="button3" on-click="prevPage()">&larr;</button>
-                <span><strong>Página {{page}}/{{lastPage}}</strong></span>
-                <button class="button3" on-click="nextPage()">&rarr;</button>
-              </div>
-              <br>
-            </template>
-            <template iterate="i in charValues">
-              <div class="selectable coloredHover" on-click="choose(i.id)"><strong>{{i.id}}</strong> {{i.desc}}</div>                
-            </template>
-            <template if="page<lastPage">
-              <br>
-              <div class="selectable" on-click="nextPage()"><strong>Mais resultados disponiveis...</strong></div>
-            </template>
-          </div>
-        </template>
+          </template>          
+        </span>
+        <input id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" bind-value="valueid" on-focus="show()" on-blur="close()" on-change="variablevalue.changed(variable, high)">      
       </template>
       <script type="application/dart" src="x-values.dart"></script>
     </element>
