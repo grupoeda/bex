@@ -46,7 +46,15 @@ class Cell{
   bool selected = false;
   String get value{
     if((model.viewState.useDescription&&description!=null&&description.length>0)||id==null||id.length==0)
-      return description;
+      if(!total&&(type==Cell.CHARDATACOLUMN||type==Cell.CHARDATAROW)){
+        if(model.viewState.viewTableMode==ViewState.VIEW_TABLE_DESCRIPTION)
+          return description;
+        else if(model.viewState.viewTableMode==ViewState.VIEW_TABLE_ID)
+          return id;
+        else if(model.viewState.viewTableMode==ViewState.VIEW_TABLE_ID_AND_DESCRIPTION)
+          return "${id} - ${description}";
+      }else
+        return description;
     else
       return id;
   }
@@ -396,6 +404,9 @@ class QueryExecutionState{
 
 @observable
 class ViewState{
+  static const String VIEW_TABLE_ID = "0";
+  static const String VIEW_TABLE_DESCRIPTION = "1";
+  static const String VIEW_TABLE_ID_AND_DESCRIPTION = "2";
   bool showSystem = false;
   bool useDescription = true;  
   bool showInformation = false;
@@ -404,6 +415,7 @@ class ViewState{
   bool showGrid = true;
   bool expandTableText = false;
   bool showSettings = false;
+  String viewTableMode = VIEW_TABLE_DESCRIPTION;
 }
 
 @observable

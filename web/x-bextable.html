@@ -25,7 +25,13 @@
           <template if="model.viewState.showSettings">
             <div class="settings">
               <div><input id="checkShowSystem" type="checkbox" bind-checked="model.viewState.showSystem"><label for="checkShowSystem">Escolher Sistema</label></div>
-              <div><input id="checkUseDescription" type="checkbox" bind-checked="model.viewState.useDescription"><label for="checkUseDescription">Descrições</label></div>
+              <div><input id="checkUseDescription" type="checkbox" bind-checked="model.viewState.useDescription"><label for="checkUseDescription">Descrições Globais</label></div>
+              <div style="border-top:1px solid;border-bottom:1px solid;">
+                <div><span>Inf. Tabela</span></div>
+                <div><input name="radioUseTable" value="0" id="radioUseTableId" type="radio" bind-value="model.viewState.viewTableMode"><label for="radioUseTableId">Id</label></div>              
+                <div><input name="radioUseTable" value="1" id="radioUseTableDescription" type="radio" bind-value="model.viewState.viewTableMode"><label for="radioUseTableDescription">Descrição</label></div>
+                <div><input name="radioUseTable" value="2" id="radioUseTableIdAndDescription" type="radio" bind-value="model.viewState.viewTableMode"><label for="radioUseTableIdAndDescription">Id - Descrição</label></div>
+              </div>
               <div><input id="checkShowInformation" type="checkbox" bind-checked="model.viewState.showInformation"><label for="checkShowInformation">Informação Relatório</label></div>
               <div><input id="checkShowAxis" type="checkbox" bind-checked="model.viewState.showAxis"><label for="checkShowAxis">Configuração Eixos</label></div>              
               <div><input id="checkShowTotals" type="checkbox" bind-checked="model.viewState.showTotals"><label for="checkShowTotals">Totais</label></div>
