@@ -137,7 +137,7 @@ class VariableValue{
     return operation=="BT"||operation=="NB";
   }
   bool get empty{
-    return low==null||low==""||high==null||high=="";
+    return (low==null||low=="")&&(high==null||high=="");
   }
   void changed(variable, isHigh){
     if(isHigh&&variable.interval=="S")
