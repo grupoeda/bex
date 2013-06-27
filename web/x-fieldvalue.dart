@@ -15,10 +15,8 @@ class XFieldValue extends WebComponent {
     variable.addVariableValue(newValue);
   }
   remove(){
-    if(variable.values.length==1)
-      value = new VariableValue();
-    else{
-      variable.removeVariableValue(value);
-    }
+    variable.removeVariableValue(value);
+    if(variable.values.length==1 && !variable.isChar)
+      variable.addVariableValue(new VariableValue());
   }
 }

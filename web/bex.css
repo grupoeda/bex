@@ -8,7 +8,7 @@ body {
 button:{
   cursor:pointer;
 }
-input:{
+input[type="text"]:{
   border: 1px solid;
 }
 select:{
@@ -339,6 +339,9 @@ select:{
 .coloredHover:hover{
   background-color: #1e62d0;
   color: #fff;
+}
+.opacityHover:hover{
+  opacity:0.5;
 }
 .centerButtons{
   text-align:center;

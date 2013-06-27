@@ -18,15 +18,15 @@
             </select>
             <select class="fieldSelect" bind-value="value.operation">
               <option value = "EQ">=</option>
-              <option value = "NE">&ne;</option>
+              <!--<option value = "NE">&ne;</option>-->
               <option value = "BT">&isin; [ ]</option>
-              <option value = "NB">&notin; [ ]</option>
+              <!--<option value = "NB">&notin; [ ]</option>-->
               <option value = "LE">&le;</option>
               <option value = "GT">&gt;</option>
               <option value = "GE">&ge;</option>
               <option value = "LT">&lt;</option>
-              <option value = "CP">*</option>
-              <option value = "NP">&ne; *</option>
+              <!--<option value = "CP">*</option>
+              <option value = "NP">&ne; *</option>-->
             </select>
           </template>
           <template if="variable.customDateInput">
@@ -44,8 +44,8 @@
               <x-values id="vhigh" values="{{model.globalState.serverState.queryState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.high" high="{{true}}"></x-values>              
             </template>
             <template if="variable.interval=='S'">
-              <button class="button2" on-click="add()">+</button>
-              <button class="button2" on-click="remove()">&ndash;</button>
+              <button class="button" on-click="add()">+</button>
+              <button class="button" on-click="remove()">&ndash;</button>
             </template>
           </template>
         </div>

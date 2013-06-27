@@ -79,7 +79,7 @@
             <table id="bextable" class="bextable">
               <tbody template iterate="line in model.globalState.serverState.queryState.queryExecutionState.bextablechecktotals">
               <tr template iterate="cell in line" class="bextablerow">
-                <td colspan="{{cell.colspanShow}}" rowspan="{{cell.rowspanShow}}" template if="(!model.viewState.showGrid||cell.show) && (model.viewState.showTotals || !(cell.totalColumn||cell.totalRow))" class="{{cell.cssClass}}{{model.viewState.expandTableText?' nowrap':''}}">{{cell.value}}</td>
+                <td colspan="{{cell.colspanShow}}" rowspan="{{cell.rowspanShow}}" template if="(!model.viewState.showGrid||cell.show) && (model.viewState.showTotals || !(cell.totalColumn||cell.totalRow))" class="{{cell.cssClass}}{{model.viewState.expandTableText?' nowrap':''}} {{cell.type==Cell.CHARINFOROW||cell.type==Cell.CHARINFOCOLUMN||cell.type==Cell.CHARDATAROW||cell.type==Cell.CHARDATACOLUMN?'selectable opacityHover':''}}" on-click="addFilter(cell)">{{cell.value}}</td>
               </tr>
               </tbody>
             </table>

@@ -15,6 +15,7 @@ class Cell{
   static const int CELL = 20;
   String id;
   String description;
+  String characteristic;
   int type;
   bool odd = false;
   int colspanTotal = 1;
@@ -70,7 +71,7 @@ class Cell{
       cssClass += "odd";
     return cssClass;
   }
-  Cell(this.id,this.description,this.type,this.total);
+  Cell(this.id,this.description,this.type,this.total,this.characteristic);
 }
 
 @observable
@@ -123,13 +124,13 @@ class VariableValue{
   String operation;
   String sign;
   String low;
-  String lowDescription;
   String high;
-  String highDescription;
   bool get interval{
     return operation=="BT"||operation=="NB";
   }
-  
+  bool get empty{
+    return low==null||low==""||high==null||high=="";
+  }
   void changed(variable, isHigh){
     if(isHigh&&variable.interval=="S")
       if(high==""&&interval)
@@ -142,16 +143,29 @@ class VariableValue{
     operation = "EQ";
     sign = "I";
     low = "";
-    lowDescription = "";
     high = "";
-    highDescription = "";
   }
 }
 
 @observable
 class Variable{
+  bool isChar;
   String id;
-  String description;
+  String _description;
+  set description(String description){
+    _description = description;
+  }
+  String get description{
+    if(!isChar || _description!=null)
+      return _description;
+    if(_description==null)
+      _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisColumns, id);
+    if(_description==null)
+      _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisRows, id);
+    if(_description==null)
+      _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisFree, id);    
+    return _description;
+  }
   bool obligatory;
   bool copy;
   String interval;
@@ -159,7 +173,7 @@ class Variable{
   int length;
   String dataType;
   String get name{
-    if(model.viewState.useDescription&&description.length>0)
+    if(model.viewState.useDescription&&description!=null&&description.length>0)
       return description;
     else
       return id;
@@ -173,6 +187,8 @@ class Variable{
       return "text";
   }
   String get htmlInputPlaceholder{
+    if(length<=0)
+      return "";
     if(dataType=="NUMC")
       return "número com ${length} digitos";
     else if(dataType=="CHAR")
@@ -193,12 +209,21 @@ class Variable{
   }
   List<VariableValue> values;
   
-  Variable(this.id,this.description,this.obligatory,this.interval,this.charName, this.length, this.dataType){
+  String findDescription(List<Axis> axisList, String char){
+    var axisAux = axisList.where((Axis axis)=>axis.id==char);
+    if(axisAux.isEmpty)
+      return null;
+    else
+      return axisAux.first.description;
+  }
+  
+  Variable(this.isChar,this.id,description,this.obligatory,this.interval,this.charName, this.length, this.dataType){
     VariableValue value = new VariableValue();    
     if(interval=='I')
       value.operation = "BT";
-    values = [];
+    values = toObservable([]);
     addVariableValue(value);
+    this.description = description;
   }
   
   addVariableValue(VariableValue value){

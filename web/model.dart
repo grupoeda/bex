@@ -63,9 +63,9 @@ class Model{
         List<Cell> tableRow = [];
         List<Cell> empty = [];
         for(num k = 0; k<countRowChars-1; k++)
-          empty.add(new Cell("","",Cell.EMPTY, false));
+          empty.add(new Cell("","",Cell.EMPTY, false, null));
         tableRow.addAll(empty);
-        Cell cell = new Cell(qes.bexraw['col_info'][i]['name'],qes.bexraw['col_info'][i]['description'],Cell.CHARINFOCOLUMN,false);
+        Cell cell = new Cell(qes.bexraw['col_info'][i]['name'],qes.bexraw['col_info'][i]['description'],Cell.CHARINFOCOLUMN,false, qes.bexraw['col_info'][i]['name']);
         tableRow.add(cell);
         qes.axisColumns.add(new Axis(qes.bexraw['col_info'][i]['name'],qes.bexraw['col_info'][i]['description']));
         for(num j = 0; j < qes.bexraw['col_data'].length; j++){
@@ -74,44 +74,44 @@ class Model{
           if(cellMap['name']=="SUMME")
             totalCol[j]=true;
           if(totalCol[j]&&oldTotalCol)
-            cell = new Cell("","",Cell.CHARDATACOLUMN,true);
+            cell = new Cell("","",Cell.CHARDATACOLUMN,true,qes.bexraw['col_info'][i]['name']);
           else
-            cell = new Cell(cellMap['name'],cellMap['description'],Cell.CHARDATACOLUMN,totalCol[j]);
+            cell = new Cell(cellMap['name'],cellMap['description'],Cell.CHARDATACOLUMN,totalCol[j], qes.bexraw['col_info'][i]['name']);
           tableRow.add(cell);        
         }
         qes.bextable.add(tableRow);
       }
       List<Cell> tableRow = [];
       if(qes.bexraw['row_info'].length==0)
-        tableRow.add(new Cell("","",Cell.EMPTY, false));
+        tableRow.add(new Cell("","",Cell.EMPTY, false, null));
       for(num i = 0; i<qes.bexraw['row_info'].length; i++){
-        Cell cell = new Cell(qes.bexraw['row_info'][i]['name'],qes.bexraw['row_info'][i]['description'],Cell.CHARINFOROW,false);
+        Cell cell = new Cell(qes.bexraw['row_info'][i]['name'],qes.bexraw['row_info'][i]['description'],Cell.CHARINFOROW,false,qes.bexraw['row_info'][i]['name']);
         tableRow.add(cell);
         qes.axisRows.add(new Axis(qes.bexraw['row_info'][i]['name'],qes.bexraw['row_info'][i]['description']));
       }
       for(num i = 0; i<qes.bexraw['col_data'].length; i++){
-        tableRow.add(new Cell("","", Cell.CHARDATACOLUMN, totalCol[i]));
+        tableRow.add(new Cell("","", Cell.CHARDATACOLUMN, totalCol[i],null));
       }
       qes.bextable.add(tableRow);        
       for(num i = 0; i<qes.bexraw['row_data'].length; i++){
         List<Cell> tableRow = [];
         bool total=false;
         bool clearNextTotalTitle=false;
-        for(Map j in qes.bexraw['row_data'][i]){
-          if(j['name']=="SUMME"){
+        for(num j = 0; j<qes.bexraw['row_data'][i].length;j++){
+          if(qes.bexraw['row_data'][i][j]['name']=="SUMME"){
             if(total)
               clearNextTotalTitle=true;
             total=true;
           }
           if(clearNextTotalTitle)
-            tableRow.add(new Cell("","", Cell.CHARDATAROW, total));
+            tableRow.add(new Cell("","", Cell.CHARDATAROW, total, qes.bexraw['row_info'][j]['name']));
           else
-            tableRow.add(new Cell(j['name'],j['description'], Cell.CHARDATAROW, total));
+            tableRow.add(new Cell(qes.bexraw['row_data'][i][j]['name'],qes.bexraw['row_data'][i][j]['description'], Cell.CHARDATAROW, total, qes.bexraw['row_info'][j]['name']));
         }
         if(qes.bexraw['values'].length>0){
           for(num j = 0; j<qes.bexraw['values'][i].length; j++){
             Map cell = qes.bexraw['values'][i][j];
-            tableRow.add(new Cell(cell['name'],cell['formatted'], Cell.CELL, total||totalCol[j]));
+            tableRow.add(new Cell(cell['name'],cell['formatted'], Cell.CELL, total||totalCol[j],null));
           }
         }
         qes.bextable.add(tableRow);
@@ -121,16 +121,16 @@ class Model{
         qes.axisFree.add(axis);
       }
       List<Cell> line = [];
-      line.add(new Cell("Tipo", "Tipo", Cell.CHARINFOCOLUMN, false));
-      line.add(new Cell("Nome", "Nome", Cell.CHARINFOCOLUMN, false));
-      line.add(new Cell("Valor", "Valor", Cell.CHARINFOCOLUMN, false));
+      line.add(new Cell("Tipo", "Tipo", Cell.CHARINFOCOLUMN, false,null));
+      line.add(new Cell("Nome", "Nome", Cell.CHARINFOCOLUMN, false,null));
+      line.add(new Cell("Valor", "Valor", Cell.CHARINFOCOLUMN, false,null));
       qes.bexinfo.add(line);
       for(num i = 0; i<qes.bexraw['symbols'].length; i++){
         List<Cell> line = [];
         Map cell=qes.bexraw['symbols'][i];
-        line.add(new Cell(cell['sym_type'], cell['sym_type'], Cell.CHARDATAROW, false));
-        line.add(new Cell(cell['sym_name'], cell['sym_caption'], Cell.CHARDATAROW, false));
-        line.add(new Cell(cell['sym_value'], cell['sym_value'], Cell.CELL, false));
+        line.add(new Cell(cell['sym_type'], cell['sym_type'], Cell.CHARDATAROW, false,null));
+        line.add(new Cell(cell['sym_name'], cell['sym_caption'], Cell.CHARDATAROW, false,null));
+        line.add(new Cell(cell['sym_value'], cell['sym_value'], Cell.CELL, false,null));
         qes.bexinfo.add(line);
       }
       for(int i = 0; i<qes.bextable.length;i++){
@@ -326,7 +326,9 @@ class Model{
         endpointParams += "&USER=${authentication.user}";
         endpointParams += "&KEY=${authentication.key}";
         endpointParams += "&DATETIME=${authentication.datetime}";      
-        num i = 1;
+        num iVar = 1;
+        num iChar = 1;
+        num i;
         for(Variable variable in globalState.serverState.queryState.currentQueryVars){
           bool filled = false;
           for(num index = 0; index<variable.values.length;index++){
@@ -338,8 +340,17 @@ class Model{
               String operation = variable.values[index].operation;
               if(variable.interval=="I"&&(high==null||high==""))
                 operation="EQ";
-              hash += "&VAR${i}_VNAM=${variable.id}&VAR${i}_OPT=${operation}&VAR${i}_SIGN=${variable.values[index].sign}&VAR${i}_LOW=${low}&VAR${i}_HIGH=${high}";                  
-              i++;
+              String param;
+              if(variable.isChar){
+                i = iChar;
+                iChar++;
+                param = "CHAR";
+              }else{
+                i = iVar;
+                iVar++;
+                param = "VAR";
+              }
+              hash += "&${param}${i}_VNAM=${variable.id}&${param}${i}_OPT=${operation}&${param}${i}_SIGN=${variable.values[index].sign}&${param}${i}_LOW=${low}&${param}${i}_HIGH=${high}";
               filled = true;
             } else if (!filled&&variable.obligatory){
               globalState.errorMessage='O filtro "${variable.name}" é obrigatório';
@@ -395,7 +406,7 @@ class Model{
       globalState.errorMessage=null;    
       for(Map i in result['vars']){
         if(i['vartyp']=='1')
-          globalState.serverState.queryState.currentQueryVars.add(new Variable(i['vnam'],i['vtxt'],i['entrytp']=='1'?true:false,i['vparsel'],i['iobjnm'],int.parse(i['outputlen']),i['datatp']));
+          globalState.serverState.queryState.currentQueryVars.add(new Variable(false,i['vnam'],i['vtxt'],i['entrytp']=='1'?true:false,i['vparsel'],i['iobjnm'],int.parse(i['outputlen']),i['datatp']));
       }
       globalState.serverState.queryState.currentQueryVars.sort((Variable a, Variable b) {
         if(a.obligatory)
@@ -507,14 +518,14 @@ class Model{
     Map<String, Map<String, String>> paramVars = {};
     for(String k in params.keys){
       String p=k.toLowerCase();
-      if(p.startsWith("var")){
+      if(p.startsWith("var")||p.startsWith("char")){
         List<String> aux = p.split("_");
         if(aux.length==2){
           if(paramVars[aux[0]]==null){
             paramVars[aux[0]]={};
           }
           paramVars[aux[0]][aux[1]]=params[k];
-        }
+        }       
       }else if(p.startsWith("free")){
         qes.newAxisFree.add(new Axis(params[k],params[k]));
       }else if(p.startsWith("col")){
@@ -523,14 +534,15 @@ class Model{
         qes.newAxisRows.add(new Axis(params[k],params[k]));
       }
     }
-    for(Map<String, String> varMap in paramVars.values){
+    for (String varKey in paramVars.keys){
+      Map<String, String> varMap = paramVars[varKey];
       String vnam = varMap['vnam'];
       var variables = vars.where((Variable v){
         return v.id==vnam;
       });
       Variable variable;
       if(variables.isEmpty){        
-        variable = new Variable(vnam,vnam,false,"S",vnam,100,"CHAR");
+        variable = new Variable(varKey.startsWith("char"),vnam,null,false,"S",vnam,0,"CHAR");
         vars.add(variable);
       }else{
         variable = variables.first;        
