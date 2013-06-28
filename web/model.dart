@@ -623,7 +623,8 @@ void main() {
   model.params = new Params();
   model.params.mock = params['mock']!=null;
   model.params.mode = params['mode'];
-  model.viewState.showGraphMode = params['graphtype'];
+  if(params['graphtype']!=null)
+    model.viewState.showGraphMode = params['graphtype'];
   if(model.params.mock)
     model.globalState.serverState.servers.add(Server.MOCK);  
   Future future;
