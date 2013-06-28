@@ -17,6 +17,7 @@ class Cell{
   String description;
   String characteristic;
   int type;
+  String unit;
   bool odd = false;
   int colspanTotal = 1;
   int rowspanTotal = 1;
@@ -406,7 +407,13 @@ class QueryExecutionState{
 class ViewState{
   static const String VIEW_TABLE_ID = "0";
   static const String VIEW_TABLE_DESCRIPTION = "1";
-  static const String VIEW_TABLE_ID_AND_DESCRIPTION = "2";
+  static const String VIEW_TABLE_ID_AND_DESCRIPTION = "2";  
+  static const String GRAPH_MODE_LINE = "0";
+  static const String GRAPH_MODE_LINE_FUNCTION = "1";
+  static const String GRAPH_MODE_AREA = "2";
+  static const String GRAPH_MODE_BAR = "3";
+  static const String GRAPH_MODE_COLUMN = "4";
+  static const String GRAPH_MODE_PIE = "5";
   bool showSystem = false;
   bool useDescription = true;  
   bool showInformation = false;
@@ -416,6 +423,8 @@ class ViewState{
   bool expandTableText = false;
   bool showSettings = false;
   String viewTableMode = VIEW_TABLE_DESCRIPTION;
+  bool showGraph = false;
+  String showGraphMode = GRAPH_MODE_COLUMN;
 }
 
 @observable

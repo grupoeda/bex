@@ -7,6 +7,7 @@
     <link rel="import" href="x-bexinfo.html">
     <link rel="import" href="x-bexaxis.html">
     <link rel="import" href="x-field.html">
+    <link rel="import" href="x-graph.html">
     <link rel="import" href="packages/sharepointauth/components/xsharepointauth.html">
   </head>
   <body>
@@ -33,7 +34,16 @@
                 <div><input name="radioUseTable" value="2" id="radioUseTableIdAndDescription" type="radio" bind-value="model.viewState.viewTableMode"><label for="radioUseTableIdAndDescription">Id - Descrição</label></div>
               </div>
               <div><input id="checkShowInformation" type="checkbox" bind-checked="model.viewState.showInformation"><label for="checkShowInformation">Informação Relatório</label></div>
-              <div><input id="checkShowAxis" type="checkbox" bind-checked="model.viewState.showAxis"><label for="checkShowAxis">Configuração Eixos</label></div>              
+              <div><input id="checkShowAxis" type="checkbox" bind-checked="model.viewState.showAxis"><label for="checkShowAxis">Configuração Eixos</label></div>
+              <div style="border-top:1px solid;border-bottom:1px solid;">
+                <div><input id="checkShowGraph" type="checkbox" bind-checked="model.viewState.showGraph"><label for="checkShowGraph">Gráfico</label></div>
+                <div><input name="radioShowGraph" value="0" id="radioGraphLine" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioGraphLine">Linhas</label></div>
+                <div><input name="radioShowGraph" value="1" id="radioGraphLineFunction" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioGraphLineFunction">Linhas Interpolado</label></div>
+                <div><input name="radioShowGraph" value="2" id="radioGraphArea" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioGraphArea">Área</label></div>
+                <div><input name="radioShowGraph" value="3" id="radioGraphBar" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioGraphBar">Barras</label></div>
+                <div><input name="radioShowGraph" value="4" id="radioGraphColumn" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioGraphColumn">Colunas</label></div>
+                <div><input name="radioShowGraph" value="5" id="radioGraphPie" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioGraphPie">Tarte</label></div>
+              </div>              
               <div><input id="checkShowTotals" type="checkbox" bind-checked="model.viewState.showTotals"><label for="checkShowTotals">Totais</label></div>
               <div><input id="checkShowGrid" type="checkbox" bind-checked="model.viewState.showGrid"><label for="checkShowGrid">Grelha</label></div>
               <div><input id="checkExpandTableText" type="checkbox" bind-checked="model.viewState.expandTableText"><label for="checkExpandTableText">Expandir Relatório</label></div>
@@ -79,8 +89,13 @@
           <template if="model.viewState.showAxis">
             <x-bexaxis></x-bexaxis>
           </template>
-        </template>        
+        </template>
         <template if="model.globalState.serverState.queryState!=null && model.globalState.serverState.queryState.queryExecutionState!=null">            
+          <template if="model.globalState.serverState.queryState.queryExecutionState.bexraw!=null && model.globalState.serverState.queryState.queryExecutionState.bexraw['col_info']!=null">
+            <template if="(model.params.modeAll && model.viewState.showGraph) || model.params.modeGraph">
+              <x-graph viewstate="{{model.viewState}}" bextable="{{model.globalState.serverState.queryState.queryExecutionState.bextable}}" bexraw="{{model.globalState.serverState.queryState.queryExecutionState.bexraw}}"></x-graph>
+            </template>
+          </template>
           <template if="model.params.modeAll || model.params.modeTable">
             <table id="bextable" class="bextable">
               <tbody template iterate="line in model.globalState.serverState.queryState.queryExecutionState.bextablechecktotals">

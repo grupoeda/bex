@@ -111,7 +111,10 @@ class Model{
         if(qes.bexraw['values'].length>0){
           for(num j = 0; j<qes.bexraw['values'][i].length; j++){
             Map cell = qes.bexraw['values'][i][j];
-            tableRow.add(new Cell(cell['name'],cell['formatted'], Cell.CELL, total||totalCol[j],null));
+            Cell newCell = new Cell(cell['value'],cell['formatted'], Cell.CELL, total||totalCol[j],null);
+            newCell.unit=cell['unit'];
+            tableRow.add(newCell);
+            
           }
         }
         qes.bextable.add(tableRow);
@@ -620,6 +623,7 @@ void main() {
   model.params = new Params();
   model.params.mock = params['mock']!=null;
   model.params.mode = params['mode'];
+  model.viewState.showGraphMode = params['graphtype'];
   if(model.params.mock)
     model.globalState.serverState.servers.add(Server.MOCK);  
   Future future;

@@ -17,6 +17,9 @@ select:{
 .custominput{
   border: 1px solid;
 }
+.panelgraph{
+  height:600px;
+}
 .buttonsettings:hover{
   background-color: #f93;
 }
@@ -34,6 +37,7 @@ select:{
   vertical-align:text-bottom;
 }
 .panelsettings{
+  z-index:999;
   text-align:rigth;
   position:fixed;
   top:0px;
@@ -49,6 +53,7 @@ select:{
   font-weight: bold;
 }
 .settings{
+  z-index:999;
   position:fixed;
   right:10px;
   background-color:#fff;
