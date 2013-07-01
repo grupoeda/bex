@@ -22,28 +22,34 @@ class XGraph extends WebComponent {
       var gviz = js.context.google.visualization;
       var arrayData = js.array(chartdata);
       var tableData = gviz.arrayToDataTable(arrayData);
-      var jsoptions = js.map(options);
-      Element graphElement=query('#graphvisualization');
+      var jsoptions = js.map(options);      
       var chart;
-      if(viewstate.showGraphMode==ViewState.GRAPH_MODE_LINE || viewstate.showGraphMode==ViewState.GRAPH_MODE_LINE_FUNCTION)
-        chart = new js.Proxy(gviz.LineChart, graphElement);
-      else if(viewstate.showGraphMode==ViewState.GRAPH_MODE_AREA)
-        chart = new js.Proxy(gviz.AreaChart, graphElement);
-      else if(viewstate.showGraphMode==ViewState.GRAPH_MODE_BAR)
-        chart = new js.Proxy(gviz.BarChart, graphElement);
-      else if(viewstate.showGraphMode==ViewState.GRAPH_MODE_COLUMN)
-        chart = new js.Proxy(gviz.ColumnChart, graphElement);
-      else if(viewstate.showGraphMode==ViewState.GRAPH_MODE_PIE)
-        chart = new js.Proxy(gviz.PieChart, graphElement);
-      chart.draw(tableData, jsoptions);
+      Element graphElement=query('#graphvisualization');
+      if(graphElement!=null){
+        if(viewstate.showGraphMode==ViewState.GRAPH_MODE_LINE || viewstate.showGraphMode==ViewState.GRAPH_MODE_LINE_FUNCTION)
+          chart = new js.Proxy(gviz.LineChart, graphElement);
+        else if(viewstate.showGraphMode==ViewState.GRAPH_MODE_AREA)
+          chart = new js.Proxy(gviz.AreaChart, graphElement);
+        else if(viewstate.showGraphMode==ViewState.GRAPH_MODE_BAR)
+          chart = new js.Proxy(gviz.BarChart, graphElement);
+        else if(viewstate.showGraphMode==ViewState.GRAPH_MODE_COLUMN)
+          chart = new js.Proxy(gviz.ColumnChart, graphElement);
+        else if(viewstate.showGraphMode==ViewState.GRAPH_MODE_PIE)
+          chart = new js.Proxy(gviz.PieChart, graphElement);      
+        if(chart!=null&&graphElement!=null){        
+          chart.draw(tableData, jsoptions);
+        }
+      }
     }
   }
   
   bool fillChartData(){
     List<List> chartdata=[];
     Map options={};
-    if(bexraw==null||bexraw['row_data']==null||bexraw['col_data']==null||bexraw['row_data'].length==0||bexraw['col_data'].length==0)
-      return false;    
+    if(bexraw==null||bexraw['row_data']==null||bexraw['col_data']==null||bexraw['row_data'].length==0||bexraw['col_data'].length==0){
+      model.globalState.errorMessage="Tabela necessita de ter 1 ou mais linhas e colunas para mostrar gráfico'";
+      return false;
+    }
     options["title"]=model.globalState.serverState.currentQuery.value;
     List<String> header = [];
     String headerId="";
@@ -133,6 +139,7 @@ class XGraph extends WebComponent {
     options["series"]=series;
     this.chartdata=chartdata;
     this.options=options;
+    model.globalState.errorMessage=null;
     return true;
   }
   

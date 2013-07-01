@@ -18,7 +18,7 @@ select:{
   border: 1px solid;
 }
 .panelgraph{
-  height:600px;
+  min-height:350px;
 }
 .buttonsettings:hover{
   background-color: #f93;
