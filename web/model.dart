@@ -370,7 +370,7 @@ class Model{
       if(validate){
         endpointParams+=hash;
         globalState.loading=true;
-        globalState.serverState.queryState.queryExecutionState = new QueryExecutionState();
+        globalState.serverState.queryState.queryExecutionState = null;
         callService("execute",endpointParams).then((result){
           assignBexResult(result);
           hash="execute&serverId=${globalState.serverState.serverId}&queryId=${globalState.serverState.currentQueryId}${hash}";
@@ -402,16 +402,16 @@ class Model{
   }
   
   void assignGetVarsResult(Map result){
-    globalState.serverState.queryState = new QueryState();
+    QueryState qs = new QueryState();
     if(result['error']!=null)
       globalState.errorMessage=result['error'];
     else{
       globalState.errorMessage=null;    
       for(Map i in result['vars']){
         if(i['vartyp']=='1')
-          globalState.serverState.queryState.currentQueryVars.add(new Variable(false,i['vnam'],i['vtxt'],i['entrytp']=='1'?true:false,i['vparsel'],i['iobjnm'],int.parse(i['outputlen']),i['datatp']));
+          qs.currentQueryVars.add(new Variable(false,i['vnam'],i['vtxt'],i['entrytp']=='1'?true:false,i['vparsel'],i['iobjnm'],int.parse(i['outputlen']),i['datatp']));
       }
-      globalState.serverState.queryState.currentQueryVars.sort((Variable a, Variable b) {
+      qs.currentQueryVars.sort((Variable a, Variable b) {
         if(a.obligatory)
           if(b.obligatory)
             return 0;
@@ -420,7 +420,7 @@ class Model{
         else
           return 1;
       });
-      for(Variable i in globalState.serverState.queryState.currentQueryVars){
+      for(Variable i in qs.currentQueryVars){
         String high = globalState.lastValues["h-${i.id}"];
         if(high!=null)
           i.values[0].high=high;
@@ -429,6 +429,7 @@ class Model{
           i.values[0].low=low;
       }
     }
+    globalState.serverState.queryState = qs;
     globalState.loading=false;
   }
   
@@ -457,7 +458,7 @@ class Model{
     Completer completer=new Completer();
     globalState.serverState.currentQueryId = null;
     globalState.serverState.queryState = null;
-    globalState.serverState.queries = {};
+    globalState.serverState.queries = toObservable({});
     if(globalState.serverState.currentServer!=null){
       callService("getqueries","").then((result){
         assignQueries(result);
@@ -610,14 +611,8 @@ Map<String, String> getUriParams(String uriSearch) {
   return {};
 }
 
-checkHtml5Support(){
-  model.html5Support = new Html5Support();
-  model.html5Support.inputTypeDate = new InputElement(type: "date").type != "text";
-  model.html5Support.inputTypeNumber = new InputElement(type: "number").type != "text";
-}
-
 void main() {
-  checkHtml5Support();
+  model.html5Support = new Html5Support();
   Map<String, String> params = getUriParams(window.location.search);
   Map<String, String> paramsHash = getUriParams(window.location.hash);
   model.params = new Params();

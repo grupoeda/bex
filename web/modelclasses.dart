@@ -3,6 +3,16 @@ part of model;
 class Html5Support{
   bool inputTypeDate;
   bool inputTypeNumber;
+  bool anchorDownload;
+  
+  Html5Support(){
+    inputTypeDate = new InputElement(type: "date").type != "text";
+    inputTypeNumber = new InputElement(type: "number").type != "text";
+    AnchorElement a = new AnchorElement();
+    a.download="x.txt";
+    anchorDownload = a.download=="x.txt";
+    print(anchorDownload);
+  }
 }
 
 @observable
@@ -167,12 +177,14 @@ class Variable{
   String get description{
     if(!isChar || _description!=null)
       return _description;
-    if(_description==null)
-      _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisColumns, id);
-    if(_description==null)
-      _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisRows, id);
-    if(_description==null)
-      _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisFree, id);    
+    if(model.globalState.serverState.queryState.queryExecutionState!=null){
+      if(_description==null)
+        _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisColumns, id);
+      if(_description==null)
+        _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisRows, id);
+      if(_description==null)
+        _description = findDescription(model.globalState.serverState.queryState.queryExecutionState.axisFree, id);
+    }
     return _description;
   }
   bool obligatory;
@@ -277,7 +289,7 @@ class ServerState{
     window.location.hash = "";
     setServerId(id,true);
   }
-  Map<String, Query> queries={};
+  Map<String, Query> queries=toObservable({});
   List<Query> get queryList{
     List<Query> queryList = toObservable(queries.values.toList(growable: true));
     queryList.sort((Query a, Query b) {
@@ -352,6 +364,7 @@ class QueryState{
 @observable
 class QueryExecutionState{
   Map bexraw = {};
+  bool download=false;
   List<List<Cell>> bextable = toObservable([]);
   List<List<Cell>> bexinfo = toObservable([]);
   List<Axis> newAxisFree = toObservable([]);

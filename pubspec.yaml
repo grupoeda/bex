@@ -1,9 +1,12 @@
 name: bex
-version: 0.1.0
+version: 0.3.0
 author: João Furtado
 description: Web UI app for SAP BW
 dependencies:
+  Downloadify:
+    git: https://github.com/jrofurtado/Downloadify.git
   browser: any
+  crypto: any
   datepicker: any
   sharepointauth:
     git: https://github.com/jrofurtado/sharepointauth.git

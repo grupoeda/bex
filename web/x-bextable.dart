@@ -71,6 +71,12 @@ class XBexTable extends WebComponent {
     variable.addVariableValue(variableValue);
   }
   
+  void prepareDownload(){
+    if(model.globalState.serverState.queryState.queryExecutionState!=null){
+      model.globalState.serverState.queryState.queryExecutionState.download=true;
+    }
+  }
+  
 /*  void exportCSV(){
     String content = "";
     String line = "";

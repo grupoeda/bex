@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <element name="x-downloadbutton" constructor="XDownloadButton" extends="span">
+      <template>        
+        <button id="downloadify" class="buttonReady">Download pronto</button>
+      </template>
+      <script type="application/dart" src="x-downloadbutton.dart"></script>
+    </element>
+    <element name="x-download" constructor="XDownload" extends="span">
+      <template>
+        <div>
+          <template if="!downloadReady">
+            <img src="../loading-small.gif" />
+          </template>
+          <template if="downloadReady">
+            <template if="model.html5Support.anchorDownload">
+              <a class="buttonReady" download="{{filename}}" href="{{dataUrl}}">Download pronto</a>
+            </template>
+            <template if="!model.html5Support.anchorDownload">          
+              <x-downloadbutton filename="{{filename}}" filedata="{{filedata}}"></x-downloadbutton>
+            </template>
+          </template>
+        </div>
+      </template>
+      <script type="application/dart" src="x-download.dart"></script>
+    </element>
+  </body>
+</html>

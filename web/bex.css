@@ -245,6 +245,22 @@ select:{
   background-color: #1e62d0;
   color: #fff;
 }
+.buttonReady{
+  background-color: #1ed062;
+  color: #ffffff;
+  border: 0;
+  font-weight:bold;
+  padding:6px 12px 6px 12px;
+  border:0;
+  text-decoration:none;
+}
+.buttonReady:hover{
+  background-color: #2ee072;
+}
+.buttonReady:active{
+  position:relative;
+  top:1px;
+}
 .select{
   background-color: #F0F0F0;
   font-size: 14px;

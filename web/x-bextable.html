@@ -8,6 +8,7 @@
     <link rel="import" href="x-bexaxis.html">
     <link rel="import" href="x-field.html">
     <link rel="import" href="x-graph.html">
+    <link rel="import" href="x-download.html">
     <link rel="import" href="packages/sharepointauth/components/xsharepointauth.html">
   </head>
   <body>
@@ -74,7 +75,11 @@
               </div>
               <div class="panelbuttons">
                 <button class="button" on-click="model.executeBex()">Executar</button>
-                <button class="button" on-click="toogleShowAxis()" disabled="{{model.globalState.serverState.queryState.queryExecutionState==null}}">{{buttonToogleShowAxisText}}</button>            
+                <button class="button" on-click="toogleShowAxis()" disabled="{{model.globalState.serverState.queryState.queryExecutionState==null}}">{{buttonToogleShowAxisText}}</button>
+                <button class="button" on-click="prepareDownload()" disabled="{{model.globalState.serverState.queryState.queryExecutionState==null}}">Exportar para Excel</button>
+                <template if="model.globalState.serverState.queryState.queryExecutionState!=null && model.globalState.serverState.queryState.queryExecutionState.download">
+                  <x-download currentquery="{{model.globalState.serverState.currentQuery}}" queryexecutionstate="{{model.globalState.serverState.queryState.queryExecutionState}}"></x-download>
+                </template>
               </div> 
             </template>                                   
           </template>
