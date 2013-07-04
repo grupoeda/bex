@@ -5,11 +5,17 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <element name="x-downloadbutton" constructor="XDownloadButton" extends="span">
+    <element name="x-downloadify" constructor="XDownloadify" extends="span">
       <template>        
-        <button id="downloadify" class="buttonReady">Download pronto</button>
+        <span id="downloadify" class="buttonReady">Download pronto</span>
       </template>
-      <script type="application/dart" src="x-downloadbutton.dart"></script>
+      <script type="application/dart" src="x-downloadify.dart"></script>
+    </element>
+    <element name="x-downloadhtml5" constructor="XDownloadHtml5" extends="span">
+      <template>        
+        <a id="downloadhtml5" class="buttonReady" download="{{filename}}">Download pronto</a>
+      </template>
+      <script type="application/dart" src="x-downloadhtml5.dart"></script>
     </element>
     <element name="x-download" constructor="XDownload" extends="span">
       <template>
@@ -19,10 +25,10 @@
           </template>
           <template if="downloadReady">
             <template if="model.html5Support.anchorDownload">
-              <a class="buttonReady" download="{{filename}}" href="{{dataUrl}}">Download pronto</a>
+              <x-downloadhtml5 filename="{{filename}}" filedata="{{filedata}}"></x-downloadhtml5>
             </template>
             <template if="!model.html5Support.anchorDownload">          
-              <x-downloadbutton filename="{{filename}}" filedata="{{filedata}}"></x-downloadbutton>
+              <x-downloadify filename="{{filename}}" filedata="{{filedata}}"></x-downloadify>
             </template>
           </template>
         </div>

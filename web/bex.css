@@ -246,6 +246,8 @@ select:{
   color: #fff;
 }
 .buttonReady{
+  margin-top:3px;
+  display:inline-block;
   background-color: #1ed062;
   color: #ffffff;
   border: 0;

@@ -11,10 +11,6 @@ class XDownload extends WebComponent {
 @observable
   bool downloadReady = false;
   String filedata;
-  String get dataUrl{
-    print("data:text/plain;charset=utf-8;base64,"+Uri.encodeComponent(filedata));
-    return "data:text/plain;charset=utf-8;base64,"+Uri.encodeComponent(filedata);
-  }
   
   String prepareData(){
     String data = 
@@ -79,7 +75,7 @@ class XDownload extends WebComponent {
   }
   
   void inserted(){
-    new Future.delayed(new Duration(milliseconds:1), (){
+    new Future.delayed(new Duration(milliseconds:500), (){
       filedata = prepareData();
       downloadReady = true;
     });

@@ -2,7 +2,7 @@ import 'model.dart';
 import 'package:web_ui/web_ui.dart';
 import 'package:js/js.dart' as js;
 
-class XDownloadButton extends WebComponent {
+class XDownloadify extends WebComponent {
   String filedata;
   String filename;
   
@@ -19,7 +19,6 @@ class XDownloadButton extends WebComponent {
   }
   
   void inserted(){
-    if(!model.html5Support.anchorDownload)
-      createDownloadifyButton();
+    createDownloadifyButton();
   }
 }

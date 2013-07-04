@@ -1,17 +1,16 @@
 part of model;
 
 class Html5Support{
-  bool inputTypeDate;
-  bool inputTypeNumber;
-  bool anchorDownload;
+  bool inputTypeDate = false;
+  bool inputTypeNumber = false;
+  bool anchorDownload = false;
   
   Html5Support(){
     inputTypeDate = new InputElement(type: "date").type != "text";
     inputTypeNumber = new InputElement(type: "number").type != "text";
     AnchorElement a = new AnchorElement();
     a.download="x.txt";
-    anchorDownload = a.download=="x.txt";
-    print(anchorDownload);
+    anchorDownload = a.attributes["download"]!=null;
   }
 }
 
