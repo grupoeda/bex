@@ -23,7 +23,8 @@
         </template>
         <div class="panelsettings {{model.params.modeAll?'':'invisible'}}">
           <xsharepointauth bind-authentication="model.authentication" type="{{model.params.mock?'mock':'qual'}}" app="BEX"></xsharepointauth>
-          <button class="buttonsettings" on-click="toogleShowSettings()"></button>
+          <a title="Ajuda" class="help" href="help.html" target="_blank"></a>
+          <button title="Configurações" class="buttonsettings" on-click="toogleShowSettings()"></button>
           <template if="model.viewState.showSettings">
             <div class="settings">
               <div><input id="checkShowSystem" type="checkbox" bind-checked="model.viewState.showSystem"><label for="checkShowSystem">Escolher Sistema</label></div>

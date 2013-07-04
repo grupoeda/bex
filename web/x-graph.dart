@@ -140,7 +140,6 @@ class XGraph extends WebComponent {
     options["series"]=series;
     this.chartdata=chartdata;
     this.options=options;
-    print(chartdata);
     model.globalState.errorMessage=null;
     return true;
   }

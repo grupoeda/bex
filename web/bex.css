@@ -10,15 +10,30 @@ button:{
 }
 input[type="text"]:{
   border: 1px solid;
+  color: #1e62d0;
 }
 select:{
   border: 1px solid;
+  color: #1e62d0;
 }
 .custominput{
   border: 1px solid;
+  color: #1e62d0;
 }
 .panelgraph{
   min-height:350px;
+}
+.help{
+  display:inline-block;
+  background-image:url('help.png');
+  background-color:#fff;
+  width:32px;
+  height:32px;
+  border:none;
+  vertical-align:text-bottom;
+}
+.help:hover{
+  background-color: #f93;
 }
 .buttonsettings:hover{
   background-color: #f93;
@@ -290,6 +305,11 @@ select:{
 .fieldLabel{
   display:inline-block;
   width:250px;
+  font-weight:bold;
+  color: #1e62d0;
+}
+.fieldTo{
+  display:inline-block;
   font-weight:bold;
   color: #1e62d0;
 }

@@ -373,8 +373,10 @@ class Model{
         globalState.serverState.queryState.queryExecutionState = null;
         callService("execute",endpointParams).then((result){
           assignBexResult(result);
-          hash="execute&serverId=${globalState.serverState.serverId}&queryId=${globalState.serverState.currentQueryId}${hash}";
-          window.location.hash=hash;
+          if(model.params.modeAll){
+            hash="execute&serverId=${globalState.serverState.serverId}&queryId=${globalState.serverState.currentQueryId}${hash}";          
+            window.location.hash=hash;
+          }
           completer.complete();
         }).catchError((e){
           globalState.loading=false;
@@ -515,9 +517,8 @@ class Model{
       return str;
     }
   }
-  void fillVarsFromHash(Map<String, String> params){
-    QueryExecutionState qes = new QueryExecutionState();
-    globalState.serverState.queryState.queryExecutionState=qes;
+  void fillVarsFromParams(Map<String, String> params){
+    QueryExecutionState qes = new QueryExecutionState();    
     List<Variable> vars = globalState.serverState.queryState.currentQueryVars;
     Map<String, Map<String, String>> paramVars = {};
     for(String k in params.keys){
@@ -567,6 +568,7 @@ class Model{
     for(Variable variable in vars)
       if(variable.values.length>1)
         variable.values.removeAt(0);
+    globalState.serverState.queryState.queryExecutionState=qes;
   }
   
   void assignData(String charName, Map result){
@@ -615,27 +617,30 @@ void main() {
   model.html5Support = new Html5Support();
   Map<String, String> params = getUriParams(window.location.search);
   Map<String, String> paramsHash = getUriParams(window.location.hash);
+  Map allParams = {};
+  allParams.addAll(params);
+  //allParams.addAll(paramsHash);
   model.params = new Params();
-  model.params.mock = params['mock']!=null;
-  model.params.mode = params['mode'];
-  if(params['graphtype']!=null)
-    model.viewState.showGraphMode = params['graphtype'];
+  model.params.mock = allParams['mock']!=null;
+  model.params.mode = allParams['mode'];
+  if(allParams['graphtype']!=null)
+    model.viewState.showGraphMode = allParams['graphtype'];
   if(model.params.mock)
     model.globalState.serverState.servers.add(Server.MOCK);  
   Future future;
-  if(paramsHash['serverId']!=null)
-    future = model.globalState.serverState.setServerId(paramsHash['serverId'], model.params.modeAll);
+  if(allParams['serverId']!=null)
+    future = model.globalState.serverState.setServerId(allParams['serverId'], model.params.modeAll);
   else
     if(model.params.mock)
       future = model.globalState.serverState.setServerId(Server.MOCK.id, model.params.modeAll);
     else
       future = model.globalState.serverState.setServerId(Server.BWP.id, model.params.modeAll);
-  if(paramsHash['queryId']!=null){
+  if(allParams['queryId']!=null){
     future.then((_){
-      Future future = model.globalState.serverState.setQueryId(paramsHash['queryId'], model.params.modeAll);
-      future.then((_){
-        model.fillVarsFromHash(paramsHash);
-        if(paramsHash['execute']!=null){
+      Future future = model.globalState.serverState.setQueryId(allParams['queryId'], model.params.modeAll);
+      future.then((_){        
+        model.fillVarsFromParams(allParams);
+        if(allParams['execute']!=null){
           model.executeBex();
         }
       });

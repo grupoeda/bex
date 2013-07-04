@@ -36,7 +36,7 @@
             <x-values id="vlow" values="{{model.globalState.serverState.queryState.charValues}}" variablevalue="{{value}}" variable="{{variable}}" bind-valueid="value.low" high="{{false}}"></x-values>            
           </template>                  
           <template if="variable.interval=='S' || variable.interval=='I'">
-            <label>até</label>
+            <label class="fieldTo">até</label>
             <template if="variable.customDateInput">
               <xdateinput inputplaceholder="{{variable.htmlInputPlaceholder}}" inputmaxlength="{{variable.length}}" bind-value="value.high" on-focus="value.changed(variable, true)"></xdateinput>
             </template>

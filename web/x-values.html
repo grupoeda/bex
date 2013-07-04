@@ -5,7 +5,7 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <element name="x-values" constructor="XValues" extends="span">
+    <element name="x-values" constructor="XValues" extends="span" apply-author-styles>
       <template>
         <span class="panelValues_parent">
           <template if="variable.hasValues && showDiv && charValues.length>0">                      
@@ -28,7 +28,7 @@
             </div>
           </template>          
         </span>
-        <input id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="{{variable.htmlInputType}}" bind-value="valueid" on-focus="show()" on-blur="close()" on-change="variablevalue.changed(variable, high)">      
+        <input id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="text" bind-value="valueid" on-focus="show()" on-blur="close()" on-change="variablevalue.changed(variable, high)">      
       </template>
       <script type="application/dart" src="x-values.dart"></script>
     </element>
