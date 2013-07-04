@@ -1,6 +1,7 @@
 import 'model.dart';
 import 'package:web_ui/web_ui.dart';
 import 'dart:html';
+import 'dart:async';
 import 'package:js/js.dart' as js;
 
 class XGraph extends WebComponent {
@@ -82,7 +83,7 @@ class XGraph extends WebComponent {
     }
     for(int i=bexraw['col_info'].length+1; i<bextable.length;i++){
       if(bextable[i][0].totalRow)
-        break;
+        continue;
       List line = [];
       String char="";
       String separator="";
@@ -139,6 +140,7 @@ class XGraph extends WebComponent {
     options["series"]=series;
     this.chartdata=chartdata;
     this.options=options;
+    print(chartdata);
     model.globalState.errorMessage=null;
     return true;
   }
@@ -149,13 +151,13 @@ class XGraph extends WebComponent {
   
   void inserted() {
     observe(()=>viewstate,(_){
-      drawVisualization();
+      new Future.delayed(new Duration(milliseconds:0),(){drawVisualization();});
     });
     observe(()=>isReady,(_){
-      drawVisualization();
+      new Future.delayed(new Duration(milliseconds:0),(){drawVisualization();});
     });
     observe(()=>bextable,(_){
-      drawVisualization();
+      new Future.delayed(new Duration(milliseconds:0),(){drawVisualization();});
     });
     js.context.google.load('visualization', '1', js.map({
       'packages': ['corechart'],
