@@ -199,9 +199,7 @@ class Variable{
       return id;
   }
   String get htmlInputType{
-    if(dataType=="NUMC"&&model.html5Support.inputTypeNumber)
-      return "number";
-    else if (dataType=="DATS"&&model.html5Support.inputTypeDate)
+    if (dataType=="DATS"&&model.html5Support.inputTypeDate)
       return "date";
     else
       return "text";

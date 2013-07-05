@@ -8,9 +8,15 @@ body {
 button:{
   cursor:pointer;
 }
-input[type="text"]:{
+input:{
   border: 1px solid;
   color: #1e62d0;
+}
+input[type="radio"]:{
+  border: 0;
+}
+input[type="checkbox"]:{
+  border: 0;
 }
 select:{
   border: 1px solid;

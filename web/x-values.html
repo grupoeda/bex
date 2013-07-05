@@ -27,8 +27,8 @@
               </template>
             </div>
           </template>          
-        </span>
-        <input id="{{variable.id}}" placeholder="{{variable.htmlInputPlaceholder}}" type="text" bind-value="valueid" on-focus="show()" on-blur="close()" on-change="variablevalue.changed(variable, high)">      
+        </span>     
+        <input id="{{variable.id}}" type="{{variable.htmlInputType}}" bind-value="valueid" on-focus="show()" on-blur="close()" on-change="variablevalue.changed(variable, high)" placeholder="{{variable.htmlInputPlaceholder}}">      
       </template>
       <script type="application/dart" src="x-values.dart"></script>
     </element>
