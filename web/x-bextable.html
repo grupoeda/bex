@@ -23,7 +23,7 @@
         </template>
         <div class="panelsettings {{model.params.modeAll?'':'invisible'}}">
           <xsharepointauth bind-authentication="model.authentication" type="{{model.params.mock?'mock':'qual'}}" app="BEX"></xsharepointauth>
-          <a title="Ajuda" class="help" href="help.html" target="_blank"></a>
+          <a title="Ajuda" class="help" href="http://qintranet.eda.pt/Paginas/AJUDAWEBBEX.aspx" target="_blank"></a>
           <button title="Configurações" class="buttonsettings" on-click="toogleShowSettings()"></button>
           <template if="model.viewState.showSettings">
             <div class="settings">
