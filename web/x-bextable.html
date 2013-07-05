@@ -9,11 +9,12 @@
     <link rel="import" href="x-field.html">
     <link rel="import" href="x-graph.html">
     <link rel="import" href="x-download.html">
+    <link rel="import" href="x-embed.html">
     <link rel="import" href="packages/sharepointauth/components/xsharepointauth.html">
   </head>
   <body>
     <element name="x-bextable" constructor="XBexTable" extends="div">
-      <template>
+      <template>        
         <template if="model.globalState.errorMessage!=null && model.globalState.errorMessage!=''">
           <div class="panelAlert">
             <div class="alert">
@@ -49,6 +50,14 @@
               <div><input id="checkShowTotals" type="checkbox" bind-checked="model.viewState.showTotals"><label for="checkShowTotals">Totais</label></div>
               <div><input id="checkShowGrid" type="checkbox" bind-checked="model.viewState.showGrid"><label for="checkShowGrid">Grelha</label></div>
               <div><input id="checkExpandTableText" type="checkbox" bind-checked="model.viewState.expandTableText"><label for="checkExpandTableText">Expandir Relatório</label></div>
+              <template if="model.globalState.serverState.queryState!=null && model.globalState.serverState.queryState.queryExecutionState!=null">            
+                <template if="showEmbed">
+                  <x-embed bind-show="showEmbed"></x-embed>
+                </template>
+                <div style="border-top:1px solid;border-bottom:1px solid;">
+                  <div><span class="selectable" on-click="showEmbed=true">Embeber numa página</span></div>
+                </div>
+              </template>
             </div>            
           </template>
         </div>

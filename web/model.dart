@@ -619,7 +619,7 @@ void main() {
   Map<String, String> paramsHash = getUriParams(window.location.hash);
   Map allParams = {};
   allParams.addAll(params);
-  //allParams.addAll(paramsHash);
+  allParams.addAll(paramsHash);
   model.params = new Params();
   model.params.mock = allParams['mock']!=null;
   model.params.mode = allParams['mode'];

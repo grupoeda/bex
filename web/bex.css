@@ -399,6 +399,8 @@ select:{
   text-align:right;
 }
 .close button{
+  z-index: 9999;
+  background-color:green;
   color: #1e62d0;
   background-color: #fff;
   border: 0;
@@ -431,4 +433,39 @@ select:{
 }
 .invisible{
   display:none;
+}
+.modalbackground{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9990;
+  opacity:1;
+  pointer-events:auto;  
+}
+.modalplaceholder{
+  position:fixed;
+  top: 100px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  vertical-align:middle;
+  text-align:center; 
+}
+.modal{
+  display:inline-block;
+  z-index: 9991;
+  top:50px;
+  background-color:#fff;
+  margin:auto auto auto auto;  
+}
+.embedoptions{
+  text-align:left;
+  vertical-align:top;
+  display:inline-block;
+}
+.ident{
+  margin-left:20px;
 }

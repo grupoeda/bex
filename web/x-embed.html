@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <element name="x-embed" constructor="XEmbed" extends="div">
+      <template>
+        <div class="modalbackground">
+          <div class="modalplaceholder">
+            <div class="modal">
+              <div class="close">
+                <button on-click="show=false">x</button>
+              </div>
+              <div class="embedoptions">
+                <div><input name="radioEmbedMode" value="graph" id="radioEmbedModeGraph" type="radio" bind-value="mode"><label for="radioEmbedModeGraph">Embeber Gráfico</label></div>
+                <div><input class="ident" name="radioEmbedShowGraph" value="0" id="radioEmbedGraphLine" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioEmbedGraphLine">Linhas</label></div>
+                <div><input class="ident" name="radioEmbedShowGraph" value="1" id="radioEmbedGraphLineFunction" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioEmbedGraphLineFunction">Linhas Interpolado</label></div>
+                <div><input class="ident" name="radioEmbedShowGraph" value="2" id="radioEmbedGraphArea" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioEmbedGraphArea">Área</label></div>
+                <div><input class="ident" name="radioEmbedShowGraph" value="3" id="radioEmbedGraphBar" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioEmbedGraphBar">Barras</label></div>
+                <div><input class="ident" name="radioEmbedShowGraph" value="4" id="radioEmbedGraphColumn" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioEmbedGraphColumn">Colunas</label></div>
+                <div><input class="ident" name="radioEmbedShowGraph" value="5" id="radioEmbedGraphPie" type="radio" bind-value="model.viewState.showGraphMode"><label for="radioEmbedGraphPie">Tarte</label></div>
+              </div>
+              <div class="embedoptions">
+                <div><input name="radioEmbedMode" value="table" id="radioEmbedModeTable" type="radio" bind-value="mode"><label for="radioEmbedModeTable">Embeber Tabela</label></div>
+              </div>
+              <div class="embedoptions">
+                Copie e cole o(s) url(s) abaixo na página:<br>
+                <br>
+                Pode substituir datas fixas por variaveis no formato d{ano,mes,dia}<br>
+                Ano, mês e dia podem ser:<br>
+                _ : ano, mês ou dia actual<br>
+                <i>número</i> : ano, mês ou dia constantes<br>
+                _+<i>número</i> : ano, mês ou dia actual + número de anos, meses ou dias<br>
+                _-<i>número</i> : ano, mês ou dia actual - número de anos, meses ou dias<br>
+                <br>
+                Exemplos:<br>
+                d{_,_,_} representa data actual<br>
+                d{_-1,_,_} representa o mesmo dia do ano passado<br>
+                d{_,_,_+1} representa amanhã<br>
+                d{_+1,1,1} representa 1 de Janeiro do ano seguinte<br>
+                d{_+1,1,0} representa 31 de Dezembro do ano actual (0 representa dia anterior a 1)<br>
+              </div>
+              <br>
+              <div><span><strong>Url hiperligação:</strong></span></div>
+              <div><textarea rows="5" cols="80" readonly>{{embedUrl}}</textarea></div>
+              <br>
+              <div><span><strong>Url iframe:</strong></span></div>
+              <div><textarea rows="5" cols="80" readonly>{{embedIframeUrl}}</textarea></div>
+            </div>
+          </div>
+        </div>       
+      </template>
+      <script type="application/dart" src="x-embed.dart"></script>
+    </element>
+  </body>
+</html>
