@@ -51,7 +51,6 @@ class XGraph extends WebComponent {
       model.globalState.errorMessage="Tabela necessita de ter 1 ou mais linhas e colunas para mostrar gráfico'";
       return false;
     }
-    options["title"]=model.globalState.serverState.currentQuery.value;
     List<String> header = [];
     String headerId="";
     String separator="";
