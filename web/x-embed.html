@@ -28,7 +28,7 @@
               <div class="embedoptions">
                 Copie e cole o(s) url(s) abaixo na página:<br>
                 <br>
-                Pode substituir datas fixas por variaveis no formato d{ano,mes,dia}<br>
+                Pode substituir datas fixas por variaveis no formato {{beginVarD}}ano,mes,dia{{endVarD}}<br>
                 Ano, mês e dia podem ser:<br>
                 _ : ano, mês ou dia actual<br>
                 <i>número</i> : ano, mês ou dia constantes<br>
@@ -36,11 +36,12 @@
                 _-<i>número</i> : ano, mês ou dia actual - número de anos, meses ou dias<br>
                 <br>
                 Exemplos:<br>
-                d{_,_,_} representa data actual<br>
-                d{_-1,_,_} representa o mesmo dia do ano passado<br>
-                d{_,_,_+1} representa amanhã<br>
-                d{_+1,1,1} representa 1 de Janeiro do ano seguinte<br>
-                d{_+1,1,0} representa 31 de Dezembro do ano actual (0 representa dia anterior a 1)<br>
+                {{beginVarD}}_,_,_{{endVarD}} representa data actual<br>
+                {{beginVarD}}_-1,_,_{{endVarD}} representa o mesmo dia do ano passado<br>
+                {{beginVarD}}_,_,_+1{{endVarD}} representa amanhã<br>
+                {{beginVarD}}_+1,1,1{{endVarD}} representa 1 de Janeiro do ano seguinte<br>
+                {{beginVarD}}_+1,1,0{{endVarD}} representa 31 de Dezembro do ano actual (0 representa dia anterior a 1)<br>
+                {{beginVarD}}_,12,31{{endVarD}} também representa 31 de Dezembro do ano actual<br>
               </div>
               <br>
               <div><span><strong>Url hiperligação:</strong></span></div>

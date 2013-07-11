@@ -3,6 +3,8 @@ import 'package:web_ui/web_ui.dart';
 import 'dart:html';
 
 class XEmbed extends WebComponent {
+  final String beginVarD="d{{";
+  final String endVarD="}}";
 @observable
   bool show;
 @observable

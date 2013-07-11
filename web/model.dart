@@ -353,6 +353,8 @@ class Model{
                 iVar++;
                 param = "VAR";
               }
+              low=Uri.encodeComponent(low);
+              high=Uri.encodeComponent(high);
               hash += "&${param}${i}_VNAM=${variable.id}&${param}${i}_OPT=${operation}&${param}${i}_SIGN=${variable.values[index].sign}&${param}${i}_LOW=${low}&${param}${i}_HIGH=${high}";
               filled = true;
             } else if (!filled&&variable.obligatory){
@@ -489,19 +491,22 @@ class Model{
           int month=date.month;
           int year=date.year;
           if(comps.length>=3)
-            if(comps[2].startsWith("_"))
-              day += int.parse(comps[2].substring(1));
-            else
+            if(comps[2].startsWith("_")){
+              if(comps[2].length>1)
+                day += int.parse(comps[2].substring(1));
+            }else
               day = int.parse(comps[2]);
           if(comps.length>=2)
-            if(comps[1].startsWith("_"))
-              month += int.parse(comps[1].substring(1));
-            else
+            if(comps[1].startsWith("_")){
+              if(comps[1].length>1)
+                month += int.parse(comps[1].substring(1));
+            }else
               month = int.parse(comps[1]);
           if(comps.length>=1)
-            if(comps[0].startsWith("_"))
-              year += int.parse(comps[0].substring(1));
-            else
+            if(comps[0].startsWith("_")){
+              if(comps[0].length>1)
+                year += int.parse(comps[0].substring(1));                             
+            }else               
               year = int.parse(comps[0]);
           date = new DateTime(year, month, day);
         }catch(e, s){
@@ -509,6 +514,7 @@ class Model{
           print(s);
         }
         String dateStr = date.toString().substring(0,10);
+        dateStr=dateStr.substring(0, 4)+dateStr.substring(5, 7)+dateStr.substring(8, 10);
         print("${expression}=${dateStr}");
         return dateStr;
       });
@@ -603,7 +609,7 @@ Map<String, String> getUriParams(String uriSearch) {
     paramValuePairs.forEach((e) {
       if (e.contains('=')) {
         final paramValue = e.split('=');
-        paramMapping[paramValue[0]] = paramValue[1];
+        paramMapping[paramValue[0]] = Uri.decodeComponent(paramValue[1]);
       } else {
         paramMapping[e] = '';
       }
